@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/restaurants2030/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/restaurants2030/static/js/main.d7787c27.chunk.js",
+    "main.js.map": "/restaurants2030/static/js/main.d7787c27.chunk.js.map",
+    "runtime-main.js": "/restaurants2030/static/js/runtime-main.a8f0feca.js",
+    "runtime-main.js.map": "/restaurants2030/static/js/runtime-main.a8f0feca.js.map",
+    "static/js/2.dcccdb81.chunk.js": "/restaurants2030/static/js/2.dcccdb81.chunk.js",
+    "static/js/2.dcccdb81.chunk.js.map": "/restaurants2030/static/js/2.dcccdb81.chunk.js.map",
+    "static/js/3.db012ef8.chunk.js": "/restaurants2030/static/js/3.db012ef8.chunk.js",
+    "static/js/3.db012ef8.chunk.js.map": "/restaurants2030/static/js/3.db012ef8.chunk.js.map",
+    "index.html": "/restaurants2030/index.html",
+    "static/css/main.6dea0f05.chunk.css.map": "/restaurants2030/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.dcccdb81.chunk.js.LICENSE.txt": "/restaurants2030/static/js/2.dcccdb81.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a8f0feca.js",
+    "static/js/2.dcccdb81.chunk.js",
+    "static/css/main.6dea0f05.chunk.css",
+    "static/js/main.d7787c27.chunk.js"
+  ]
+}
