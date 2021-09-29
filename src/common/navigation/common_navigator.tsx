@@ -1,5 +1,4 @@
 import { Route, Switch, Redirect } from "react-router-dom";
-import React, { Suspense } from "react";
 import RestaurantPage from "../../pages/restaurant/restaurant_page";
 import ManagementPage from "../../pages/management/management_page";
 import KitchenPage from "../../pages/kitchen/kitchen_page";
