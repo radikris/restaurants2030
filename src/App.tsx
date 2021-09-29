@@ -1,10 +1,14 @@
-import React from 'react';
-import { ChakraProvider } from "@chakra-ui/react"
+import React from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import { BrowserRouter } from "react-router-dom";
+import CommonNavigator from "./common/navigation/common_navigator";
 
 function App() {
   return (
     <ChakraProvider>
-      <div>Restaurant 2030</div>
+      <BrowserRouter>
+        <CommonNavigator />
+      </BrowserRouter>
     </ChakraProvider>
   );
 }
