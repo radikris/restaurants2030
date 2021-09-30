@@ -31,7 +31,7 @@ jobs:
       run: npm run build
       
     - name: Install Docker
-      run: sudo apt install docker.io
+      run: sudo apt-get install docker-ce docker-ce-cli containerd.io
       
     - name: Build Docker container
       run: docker build -t react-restaurants-image .
