@@ -2,16 +2,7 @@ import React from "react";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import {
-  Image,
-  VStack,
-  HStack,
-  Text,
-  Box,
-  Flex,
-  Center,
-  Square,
-} from "@chakra-ui/react";
+import { VStack, Text, Box, Flex, Center } from "@chakra-ui/react";
 
 import {
   LeadingActions,
