@@ -15,6 +15,9 @@ jobs:
         node-version: [16.x]
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
       - name: Deploy
         run: |
           git config --global user.name $user_name
