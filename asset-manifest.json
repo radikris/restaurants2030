@@ -1,22 +1,26 @@
 {
   "files": {
     "main.css": "/restaurants2030/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/restaurants2030/static/js/main.b053f2ff.chunk.js",
-    "main.js.map": "/restaurants2030/static/js/main.b053f2ff.chunk.js.map",
-    "runtime-main.js": "/restaurants2030/static/js/runtime-main.df9908b8.js",
-    "runtime-main.js.map": "/restaurants2030/static/js/runtime-main.df9908b8.js.map",
-    "static/js/2.19c21d2b.chunk.js": "/restaurants2030/static/js/2.19c21d2b.chunk.js",
-    "static/js/2.19c21d2b.chunk.js.map": "/restaurants2030/static/js/2.19c21d2b.chunk.js.map",
-    "static/js/3.1664e162.chunk.js": "/restaurants2030/static/js/3.1664e162.chunk.js",
-    "static/js/3.1664e162.chunk.js.map": "/restaurants2030/static/js/3.1664e162.chunk.js.map",
+    "main.js": "/restaurants2030/static/js/main.5e6d5e6f.chunk.js",
+    "main.js.map": "/restaurants2030/static/js/main.5e6d5e6f.chunk.js.map",
+    "runtime-main.js": "/restaurants2030/static/js/runtime-main.59f752ce.js",
+    "runtime-main.js.map": "/restaurants2030/static/js/runtime-main.59f752ce.js.map",
+    "static/css/2.4db7fde3.chunk.css": "/restaurants2030/static/css/2.4db7fde3.chunk.css",
+    "static/js/2.9fcecb1c.chunk.js": "/restaurants2030/static/js/2.9fcecb1c.chunk.js",
+    "static/js/2.9fcecb1c.chunk.js.map": "/restaurants2030/static/js/2.9fcecb1c.chunk.js.map",
+    "static/js/3.98ed5240.chunk.js": "/restaurants2030/static/js/3.98ed5240.chunk.js",
+    "static/js/3.98ed5240.chunk.js.map": "/restaurants2030/static/js/3.98ed5240.chunk.js.map",
     "index.html": "/restaurants2030/index.html",
+    "static/css/2.4db7fde3.chunk.css.map": "/restaurants2030/static/css/2.4db7fde3.chunk.css.map",
     "static/css/main.6dea0f05.chunk.css.map": "/restaurants2030/static/css/main.6dea0f05.chunk.css.map",
-    "static/js/2.19c21d2b.chunk.js.LICENSE.txt": "/restaurants2030/static/js/2.19c21d2b.chunk.js.LICENSE.txt"
+    "static/js/2.9fcecb1c.chunk.js.LICENSE.txt": "/restaurants2030/static/js/2.9fcecb1c.chunk.js.LICENSE.txt",
+    "static/media/styles.css": "/restaurants2030/static/media/revicons.e8746a62.woff"
   },
   "entrypoints": [
-    "static/js/runtime-main.df9908b8.js",
-    "static/js/2.19c21d2b.chunk.js",
+    "static/js/runtime-main.59f752ce.js",
+    "static/css/2.4db7fde3.chunk.css",
+    "static/js/2.9fcecb1c.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.b053f2ff.chunk.js"
+    "static/js/main.5e6d5e6f.chunk.js"
   ]
 }
