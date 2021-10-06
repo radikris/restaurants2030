@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { VStack, Text, Box, Flex, Center } from "@chakra-ui/react";
+import { VStack, Text, Box, Flex, Center, Spacer } from "@chakra-ui/react";
 
 import {
   LeadingActions,
@@ -51,25 +51,6 @@ const images = [
   "https://images.unsplash.com/photo-1550064824-8f993041ffd3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
 ];
 
-const leadingActions = () => (
-  <LeadingActions>
-    <SwipeAction onClick={() => console.info("swipe action triggered")}>
-      Action name
-    </SwipeAction>
-  </LeadingActions>
-);
-
-const trailingActions = () => (
-  <TrailingActions>
-    <SwipeAction
-      destructive={true}
-      onClick={() => console.info("swipe action triggered")}
-    >
-      Delete
-    </SwipeAction>
-  </TrailingActions>
-);
-
 const ALL_ORDER = [
   {
     name: "alma",
@@ -85,48 +66,100 @@ const ALL_ORDER = [
   },
 ];
 
+//const FINISHED_ORDER = [];
+
+interface Props {
+  name: string;
+}
+
 export default function WaiterPage() {
+  const [finishedOrder, setfinishedOrder] = useState<Props[]>([]);
+  const leadingActions = () => (
+    <LeadingActions>
+      <SwipeAction onClick={() => console.info("swipe action triggered")}>
+        Action name
+      </SwipeAction>
+    </LeadingActions>
+  );
+
+  const trailingActions = (orderName: string, tableNum: number) => (
+    <TrailingActions>
+      <SwipeAction
+        destructive={true}
+        onClick={() => {
+          console.info("swipe action triggered");
+          const portfolio: Props[] = [...finishedOrder, { name: orderName }];
+          setfinishedOrder(portfolio);
+        }}
+      >
+        Delete
+      </SwipeAction>
+    </TrailingActions>
+  );
+
   return (
     <div>
-      <Carousel ssr partialVisbile responsive={responsive}>
-        {images.map((image, index) => {
-          return (
-            <Box flex="1">
-              <Flex color="white">
-                <VStack bg="white">
-                  <Text color="black">ASZTAL {index + 1}</Text>
+      <div>
+        <Carousel
+          minimumTouchDrag={80}
+          focusOnSelect={true}
+          partialVisbile={true}
+          responsive={responsive}
+        >
+          {images.map((image, index) => {
+            return (
+              <Box flex="1">
+                <Flex color="white">
+                  <VStack bg="white">
+                    <Text color="black">ASZTAL {index + 1}</Text>
 
-                  <Box bg="pink" width="300px">
-                    <Center>
-                      <VStack p="1.5">
-                        <Text>RENDELESEK</Text>
-                        {ALL_ORDER.map((order) => (
-                          <SwipeableList>
-                            <SwipeableListItem
-                              leadingActions={leadingActions()}
-                              trailingActions={trailingActions()}
-                            >
-                              <Text>{order.name}</Text>
-                            </SwipeableListItem>
-                          </SwipeableList>
-                        ))}
-                      </VStack>
-                    </Center>
-                  </Box>
-                  <Box bg="green" width="300px">
-                    <Center>
-                      <Text>FELSZOLGALT ETELEK</Text>
-                    </Center>
-                  </Box>
-                </VStack>
-              </Flex>
-            </Box>
-          );
-        })}
-      </Carousel>
-      <Box width="150px" bg="green.300" height="100%">
-        ALASDASLASFNFASBASFASK
-      </Box>
+                    <Box bg="pink" width="300px">
+                      <Center>
+                        <VStack p="1.5">
+                          <Text>RENDELESEK</Text>
+                          {ALL_ORDER.map((order, key) => (
+                            <SwipeableList key={key}>
+                              <SwipeableListItem
+                                leadingActions={leadingActions()}
+                                trailingActions={trailingActions(
+                                  order.name,
+                                  index
+                                )}
+                              >
+                                <Text>{order.name}</Text>
+                              </SwipeableListItem>
+                            </SwipeableList>
+                          ))}
+                        </VStack>
+                      </Center>
+                    </Box>
+                    <Box bg="green" width="300px">
+                      <Center>
+                        <VStack>
+                          <Text>FELSZOLGALT ETELEK</Text>
+                          {finishedOrder.map((order, index) => (
+                            <SwipeableList key={index}>
+                              <SwipeableListItem>
+                                <Text>{order.name}</Text>
+                              </SwipeableListItem>
+                            </SwipeableList>
+                          ))}
+                        </VStack>
+                      </Center>
+                    </Box>
+                  </VStack>
+                </Flex>
+              </Box>
+            );
+          })}
+        </Carousel>
+      </div>
+      <Spacer />
+      <div>
+        <Box width="150px" bg="green.300" height="100%">
+          ALASDASLASFNFASBASFASK
+        </Box>
+      </div>
     </div>
   );
 }
