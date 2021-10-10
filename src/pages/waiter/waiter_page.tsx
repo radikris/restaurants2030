@@ -2,54 +2,22 @@ import React, { useState } from "react";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { VStack, Text, Box, Flex, Center, Spacer } from "@chakra-ui/react";
-
 import {
-  LeadingActions,
-  SwipeableList,
-  SwipeableListItem,
-  SwipeAction,
-  TrailingActions,
-} from "react-swipeable-list";
-import "react-swipeable-list/dist/styles.css";
-
-const responsive = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    paritialVisibilityGutter: 60,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    paritialVisibilityGutter: 50,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    paritialVisibilityGutter: 30,
-  },
-};
-const images = [
-  "https://images.unsplash.com/photo-1549989476-69a92fa57c36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1549396535-c11d5c55b9df?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550133730-695473e544be?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550167164-1b67c2be3973?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550338861-b7cfeaf8ffd8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550223640-23097fc71cb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550353175-a3611868086b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550330039-a54e15ed9d33?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1549737328-8b9f3252b927?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1549833284-6a7df91c1f65?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1549985908-597a09ef0a7c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550064824-8f993041ffd3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550064824-8f993041ffd3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550064824-8f993041ffd3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550064824-8f993041ffd3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550064824-8f993041ffd3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550064824-8f993041ffd3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550064824-8f993041ffd3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-];
+  VStack,
+  Text,
+  Box,
+  Flex,
+  Center,
+  Spacer,
+  HStack,
+  Wrap,
+  WrapItem,
+  SimpleGrid,
+  Grid,
+  GridItem,
+} from "@chakra-ui/react";
+import TableCard from "./components/table_card";
+import DoneOrderCard from "./components/done_order_card";
 
 const ALL_ORDER = [
   {
@@ -66,7 +34,35 @@ const ALL_ORDER = [
   },
 ];
 
-//const FINISHED_ORDER = [];
+const TABLES = [
+  "Table 1",
+  "Table 2",
+  "Table 3",
+  "Table 4",
+  "Table 5",
+  "Table 6",
+  "Table 7",
+  "Table 8",
+  "Table 9",
+  "Table 10",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+  "Table 11",
+];
 
 interface Props {
   name: string;
@@ -74,92 +70,29 @@ interface Props {
 
 export default function WaiterPage() {
   const [finishedOrder, setfinishedOrder] = useState<Props[]>([]);
-  const leadingActions = () => (
-    <LeadingActions>
-      <SwipeAction onClick={() => console.info("swipe action triggered")}>
-        Action name
-      </SwipeAction>
-    </LeadingActions>
-  );
-
-  const trailingActions = (orderName: string, tableNum: number) => (
-    <TrailingActions>
-      <SwipeAction
-        destructive={true}
-        onClick={() => {
-          console.info("swipe action triggered");
-          const portfolio: Props[] = [...finishedOrder, { name: orderName }];
-          setfinishedOrder(portfolio);
-        }}
-      >
-        Delete
-      </SwipeAction>
-    </TrailingActions>
-  );
 
   return (
-    <div>
-      <div>
-        <Carousel
-          minimumTouchDrag={80}
-          focusOnSelect={true}
-          partialVisbile={true}
-          responsive={responsive}
-        >
-          {images.map((image, index) => {
-            return (
-              <Box flex="1">
-                <Flex color="white">
-                  <VStack bg="white">
-                    <Text color="black">ASZTAL {index + 1}</Text>
-
-                    <Box bg="pink" width="300px">
-                      <Center>
-                        <VStack p="1.5">
-                          <Text>RENDELESEK</Text>
-                          {ALL_ORDER.map((order, key) => (
-                            <SwipeableList key={key}>
-                              <SwipeableListItem
-                                leadingActions={leadingActions()}
-                                trailingActions={trailingActions(
-                                  order.name,
-                                  index
-                                )}
-                              >
-                                <Text>{order.name}</Text>
-                              </SwipeableListItem>
-                            </SwipeableList>
-                          ))}
-                        </VStack>
-                      </Center>
-                    </Box>
-                    <Box bg="green" width="300px">
-                      <Center>
-                        <VStack>
-                          <Text>FELSZOLGALT ETELEK</Text>
-                          {finishedOrder.map((order, index) => (
-                            <SwipeableList key={index}>
-                              <SwipeableListItem>
-                                <Text>{order.name}</Text>
-                              </SwipeableListItem>
-                            </SwipeableList>
-                          ))}
-                        </VStack>
-                      </Center>
-                    </Box>
-                  </VStack>
-                </Flex>
-              </Box>
-            );
-          })}
-        </Carousel>
-      </div>
-      <Spacer />
-      <div>
-        <Box width="150px" bg="green.300" height="100%">
-          ALASDASLASFNFASBASFASK
-        </Box>
-      </div>
-    </div>
+    <Grid
+      templateRows="repeat(1, 1fr)"
+      templateColumns="repeat(5, 1fr)"
+      gap={4}
+    >
+      <GridItem colSpan={4} bg="papayawhip" p={2}>
+        <Wrap>
+          {TABLES.map((item) => (
+            <TableCard />
+          ))}
+        </Wrap>
+      </GridItem>
+      <GridItem colSpan={1} bg="tomato">
+        <DoneOrderCard />
+        <DoneOrderCard />
+        <DoneOrderCard />
+        <DoneOrderCard />
+        <DoneOrderCard />
+        <DoneOrderCard />
+        <DoneOrderCard />
+      </GridItem>
+    </Grid>
   );
 }
