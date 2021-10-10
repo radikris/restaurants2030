@@ -35,19 +35,26 @@ const SwipeableItem: React.FC<Props> = (props) => {
     </TrailingActions>
   );
 
+  console.log(props.list);
+
   return (
-    <SwipeableList
-      fullSwipe={false}
-      style={{ backgroundColor: "orange.200" }}
-      type={ListType.IOS}
-      threshold={0.1}
-    >
-      <SwipeableListItem
-        trailingActions={trailingActions(props.id, props.onClick)}
-      >
-        {props.list[0].title}
-      </SwipeableListItem>
-    </SwipeableList>
+    <div>
+      {props.list.map((order, key) => (
+        <SwipeableList
+          key={key}
+          fullSwipe={false}
+          style={{ backgroundColor: "orange.200" }}
+          type={ListType.IOS}
+          threshold={0.1}
+        >
+          <SwipeableListItem
+            trailingActions={trailingActions(order.id, props.onClick)}
+          >
+            {props.children}
+          </SwipeableListItem>
+        </SwipeableList>
+      ))}
+    </div>
   );
 };
 

@@ -10,7 +10,11 @@ import { FaArrowAltCircleDown } from "react-icons/fa";
 import SwipeableItem from "./swipeable_item";
 import { OrderModel } from "../../../models/order";
 
-export default function TableCard() {
+interface Props {
+  idx: number;
+}
+
+const TableCard: React.FC<Props> = (props) => {
   const TABLES = [
     "Table 1",
     "Table 2",
@@ -47,6 +51,14 @@ export default function TableCard() {
     { title: "order3", price: 240, id: "3", table: 2 },
     { title: "order4", price: 321, id: "4" },
   ];
+  var ORDERS2: OrderModel[] = [
+    { title: "order1", price: 12, id: "1", table: 1 },
+    { title: "order2", price: 120, id: "2", table: 1 },
+    { title: "order3", price: 240, id: "3", table: 2 },
+    { title: "order3", price: 240, id: "3", table: 5 },
+    { title: "order3", price: 240, id: "3", table: 6 },
+    { title: "order4", price: 321, id: "4" },
+  ];
 
   return (
     <Box
@@ -72,16 +84,30 @@ export default function TableCard() {
             display="table-column"
             justifyContent="justify-start"
           >
-            <SwipeableItem
-              children={<Text>item</Text>}
-              swipeChild={<Text>OUT</Text>}
-              icon={<FaArrowAltCircleDown />}
-              id="1"
-              list={ORDERS}
-              onClick={function (id: string): void {
-                console.log("deleted ${}");
-              }}
-            />
+            {props.idx % 2 == 0 && (
+              <SwipeableItem
+                children={<Text>item</Text>}
+                swipeChild={<Text>OUT</Text>}
+                icon={<FaArrowAltCircleDown />}
+                id="1"
+                list={ORDERS}
+                onClick={function (id: string): void {
+                  console.log("deleted ${}");
+                }}
+              />
+            )}
+            {props.idx % 2 == 1 && (
+              <SwipeableItem
+                children={<Text>item</Text>}
+                swipeChild={<Text>OUT</Text>}
+                icon={<FaArrowAltCircleDown />}
+                id="1"
+                list={ORDERS2}
+                onClick={function (id: string): void {
+                  console.log("deleted ${}");
+                }}
+              />
+            )}
           </Box>
           <Divider variant="dashed" />
           <Box w="100%" bg="green.200">
@@ -106,4 +132,6 @@ export default function TableCard() {
       </Box>
     </Box>
   );
-}
+};
+
+export default TableCard;

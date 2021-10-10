@@ -6,11 +6,11 @@ export default function DoneOrderCard() {
     <Box>
       <Flex px="2" my="2">
         <Text fontSize="xl" fontWeight="bold">
-          Segun Adebayo
+          ORDER NUm
         </Text>
         <Spacer />
-        <Badge ml="1" fontSize="0.8em" colorScheme="green" variant="solid">
-          New
+        <Badge my="1" fontSize="0.8em" colorScheme="green" variant="solid">
+          TABLE1
         </Badge>
       </Flex>
       <Divider />
