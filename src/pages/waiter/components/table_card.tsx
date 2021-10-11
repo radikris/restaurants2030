@@ -9,57 +9,17 @@ import "react-swipeable-list/dist/styles.css";
 import { FaArrowAltCircleDown } from "react-icons/fa";
 import SwipeableItem from "./swipeable_item";
 import { OrderModel } from "../../../models/order";
+import { TableOrderModel } from "../../../models/tableorder";
+
+import React, { Dispatch, SetStateAction } from "react";
 
 interface Props {
-  idx: number;
+  table: TableOrderModel;
+  setFinishedTable: (tableIdx: number, newList: OrderModel[]) => void;
+  setPendingTable: (tableIdx: number, newList: OrderModel[]) => void;
 }
 
 const TableCard: React.FC<Props> = (props) => {
-  const TABLES = [
-    "Table 1",
-    "Table 2",
-    "Table 3",
-    "Table 4",
-    "Table 5",
-    "Table 6",
-    "Table 7",
-    "Table 8",
-    "Table 9",
-    "Table 10",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-    "Table 11",
-  ];
-
-  var ORDERS: OrderModel[] = [
-    { title: "order1", price: 12, id: "1", table: 1 },
-    { title: "order2", price: 120, id: "2", table: 1 },
-    { title: "order3", price: 240, id: "3", table: 2 },
-    { title: "order4", price: 321, id: "4" },
-  ];
-  var ORDERS2: OrderModel[] = [
-    { title: "order1", price: 12, id: "1", table: 1 },
-    { title: "order2", price: 120, id: "2", table: 1 },
-    { title: "order3", price: 240, id: "3", table: 2 },
-    { title: "order3", price: 240, id: "3", table: 5 },
-    { title: "order3", price: 240, id: "3", table: 6 },
-    { title: "order4", price: 321, id: "4" },
-  ];
-
   return (
     <Box
       maxW={"270px"}
@@ -84,35 +44,35 @@ const TableCard: React.FC<Props> = (props) => {
             display="table-column"
             justifyContent="justify-start"
           >
-            {props.idx % 2 == 0 && (
-              <SwipeableItem
-                children={<Text>item</Text>}
-                swipeChild={<Text>OUT</Text>}
-                icon={<FaArrowAltCircleDown />}
-                id="1"
-                list={ORDERS}
-                onClick={function (id: string): void {
-                  console.log("deleted ${}");
-                }}
-              />
-            )}
-            {props.idx % 2 == 1 && (
-              <SwipeableItem
-                children={<Text>item</Text>}
-                swipeChild={<Text>OUT</Text>}
-                icon={<FaArrowAltCircleDown />}
-                id="1"
-                list={ORDERS2}
-                onClick={function (id: string): void {
-                  console.log("deleted ${}");
-                }}
-              />
-            )}
+            <SwipeableItem
+              children={<Text>item</Text>}
+              swipeChild={<Text>OUT</Text>}
+              icon={<FaArrowAltCircleDown />}
+              id="1"
+              list={props.table.pending}
+              onClick={function (orderAction: OrderModel): void {
+                props.setFinishedTable(orderAction.table, [
+                  ...props.table.finished,
+                  orderAction,
+                ]);
+              }}
+            />
           </Box>
           <Divider variant="dashed" />
           <Box w="100%" bg="green.200">
-            <Text>1</Text>
-            <Text>1</Text>
+            <SwipeableItem
+              children={<Text>item</Text>}
+              swipeChild={<Text>OUT</Text>}
+              icon={<FaArrowAltCircleDown />}
+              id="1"
+              list={props.table.finished}
+              onClick={function (orderAction: OrderModel): void {
+                props.setPendingTable(orderAction.table, [
+                  ...props.table.finished,
+                  orderAction,
+                ]);
+              }}
+            />
           </Box>
         </VStack>
 

@@ -1,6 +1,6 @@
 export type OrderModel = {
-    title: string;
-    price: number;
     id: string;
-    table?: number;
+    title: string;
+    price?: number;
+    table: number;
 };

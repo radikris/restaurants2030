@@ -22,57 +22,27 @@ import { IndexKind } from "typescript";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import SwipeableItem from "./components/swipeable_item";
 import { OrderModel } from "../../models/order";
+import { TableOrderModel } from "../../models/tableorder";
 
-const ALL_ORDER = [
+var allTablesOrders: TableOrderModel[] = [
   {
-    name: "alma",
+    table: 1,
+    pending: [{ title: "Alma", price: 12, id: "1", table: 1 }],
+    finished: [{ title: "Körte", price: 23, id: "1", table: 1 }],
   },
   {
-    name: "korte",
+    table: 2,
+    pending: [
+      { title: "Banán", price: 34, id: "1", table: 2 },
+      { title: "Eper", price: 45, id: "2", table: 2 },
+    ],
+    finished: [{ title: "Szilva", price: 56, id: "1", table: 2 }],
   },
   {
-    name: "szilva",
+    table: 3,
+    pending: [{ title: "Majom", price: 67, id: "1", table: 3 }],
+    finished: [{ title: "Kenyérfa", price: 89, id: "1", table: 3 }],
   },
-  {
-    name: "eper",
-  },
-];
-
-const TABLES = [
-  "Table 1",
-  "Table 2",
-  "Table 3",
-  "Table 4",
-  "Table 5",
-  "Table 6",
-  "Table 7",
-  "Table 8",
-  "Table 9",
-  "Table 10",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-  "Table 11",
-];
-
-var ORDERS: OrderModel[] = [
-  { title: "order1", price: 12, id: "1", table: 1 },
-  { title: "order2", price: 120, id: "2", table: 1 },
-  { title: "order3", price: 240, id: "3", table: 2 },
-  { title: "order4", price: 321, id: "4" },
 ];
 
 interface Props {
@@ -80,7 +50,31 @@ interface Props {
 }
 
 export default function WaiterPage() {
-  const [finishedOrder, setfinishedOrder] = useState<Props[]>([]);
+  const [tableOrders, setTableOrders] =
+    useState<TableOrderModel[]>(allTablesOrders);
+
+  function setNewFinished(idx: number, list: OrderModel[]) {
+    let items = [...tableOrders];
+    // 2. Make a shallow copy of the item you want to mutate
+    let item = { ...items[idx - 1] };
+    // 3. Replace the property you're intested in
+    item.finished = list;
+    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+    items[idx - 1] = item;
+    // 5. Set the state to our new copy
+    setTableOrders(items);
+  }
+  function setNewPending(idx: number, list: OrderModel[]) {
+    let items = [...tableOrders];
+    // 2. Make a shallow copy of the item you want to mutate
+    let item = { ...items[idx - 1] };
+    // 3. Replace the property you're intested in
+    item.pending = list;
+    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+    items[idx - 1] = item;
+    // 5. Set the state to our new copy
+    setTableOrders(items);
+  }
 
   return (
     <Grid
@@ -90,13 +84,17 @@ export default function WaiterPage() {
     >
       <GridItem colSpan={4} bg="papayawhip" p={2}>
         <Wrap>
-          {TABLES.map((item, index) => (
-            <TableCard idx={index} />
+          {tableOrders.map((item, index) => (
+            <TableCard
+              table={item}
+              setFinishedTable={setNewFinished}
+              setPendingTable={setNewPending}
+            />
           ))}
         </Wrap>
       </GridItem>
       <GridItem colSpan={1} bg="tomato">
-        <SwipeableItem
+        {/* <SwipeableItem
           children={<DoneOrderCard />}
           swipeChild={<Text>OUT</Text>}
           icon={<FaArrowAltCircleLeft />}
@@ -105,7 +103,7 @@ export default function WaiterPage() {
           onClick={function (id: string): void {
             console.log("deleted ${}");
           }}
-        />
+        /> */}
       </GridItem>
     </Grid>
   );

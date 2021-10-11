@@ -18,13 +18,16 @@ interface Props {
   icon: React.ReactNode;
   id: string;
   list: OrderModel[];
-  onClick: (id: string) => void;
+  onClick: (orderAction: OrderModel) => void;
 }
 
 const SwipeableItem: React.FC<Props> = (props) => {
-  const trailingActions = (id: string, onClick: (id: string) => void) => (
+  const trailingActions = (
+    orderAction: OrderModel,
+    onClick: (orderAction: OrderModel) => void
+  ) => (
     <TrailingActions>
-      <SwipeAction destructive={true} onClick={() => onClick(id)}>
+      <SwipeAction destructive={true} onClick={() => onClick(orderAction)}>
         <Box bg="red.200">
           <Center justifyContent="justify-center" display="row" d="flex" px="1">
             {props.icon}
@@ -48,9 +51,9 @@ const SwipeableItem: React.FC<Props> = (props) => {
           threshold={0.1}
         >
           <SwipeableListItem
-            trailingActions={trailingActions(order.id, props.onClick)}
+            trailingActions={trailingActions(order, props.onClick)}
           >
-            {props.children}
+            {order.title}
           </SwipeableListItem>
         </SwipeableList>
       ))}
