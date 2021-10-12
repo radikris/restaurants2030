@@ -12,11 +12,13 @@ import { OrderModel } from "../../../models/order";
 import { TableOrderModel } from "../../../models/tableorder";
 
 import React, { Dispatch, SetStateAction } from "react";
+import { Action } from "../waiter_page";
 
 interface Props {
   table: TableOrderModel;
   setFinishedTable: (tableIdx: number, newList: OrderModel[]) => void;
   setPendingTable: (tableIdx: number, newList: OrderModel[]) => void;
+  setReducerFunc: React.Dispatch<Action>;
 }
 
 const TableCard: React.FC<Props> = (props) => {
@@ -56,6 +58,7 @@ const TableCard: React.FC<Props> = (props) => {
                   orderAction,
                 ]);
               }}
+              onReducer={props.setReducerFunc}
             />
           </Box>
           <Divider variant="dashed" />
@@ -68,10 +71,11 @@ const TableCard: React.FC<Props> = (props) => {
               list={props.table.finished}
               onClick={function (orderAction: OrderModel): void {
                 props.setPendingTable(orderAction.table, [
-                  ...props.table.finished,
+                  ...props.table.pending,
                   orderAction,
                 ]);
               }}
+              onReducer={props.setReducerFunc}
             />
           </Box>
         </VStack>

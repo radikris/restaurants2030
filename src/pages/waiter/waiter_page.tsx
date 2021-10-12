@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -45,6 +45,37 @@ var allTablesOrders: TableOrderModel[] = [
   },
 ];
 
+var orders: OrderModel[] = [
+  { title: "BanánASD", price: 34, id: "1", table: 1 },
+  { title: "EperASD", price: 45, id: "2", table: 2 },
+  { title: "KörteASD", price: 45, id: "2", table: 2 },
+  { title: "AlmaASD", price: 45, id: "2", table: 3 },
+];
+
+export type Action = {
+  type: number;
+  payload: OrderModel;
+};
+
+function reducerFunc(state: TableOrderModel[], action: Action) {
+  const { type, payload } = action;
+
+  switch (type) {
+    case 0:
+      return {
+        ...state,
+        pending: [...state[0].pending, payload],
+      };
+    case 1:
+      return {
+        ...state,
+        finished: [...state[0].finished, payload],
+      };
+    default:
+      return state;
+  }
+}
+
 interface Props {
   name: string;
 }
@@ -52,6 +83,11 @@ interface Props {
 export default function WaiterPage() {
   const [tableOrders, setTableOrders] =
     useState<TableOrderModel[]>(allTablesOrders);
+
+  const [tableOrdersReducer, setTableOrderReducer] = useReducer(
+    reducerFunc,
+    allTablesOrders
+  );
 
   function setNewFinished(idx: number, list: OrderModel[]) {
     let items = [...tableOrders];
@@ -89,21 +125,25 @@ export default function WaiterPage() {
               table={item}
               setFinishedTable={setNewFinished}
               setPendingTable={setNewPending}
+              setReducerFunc={setTableOrderReducer}
             />
           ))}
         </Wrap>
       </GridItem>
       <GridItem colSpan={1} bg="tomato">
-        {/* <SwipeableItem
+        <SwipeableItem
           children={<DoneOrderCard />}
           swipeChild={<Text>OUT</Text>}
           icon={<FaArrowAltCircleLeft />}
           id="1"
-          list={ORDERS}
-          onClick={function (id: string): void {
-            console.log("deleted ${}");
+          list={orders}
+          onClick={function (orderAction: OrderModel): void {
+            setNewFinished(orderAction.table, [
+              ...allTablesOrders[orderAction.table - 1].finished,  //check proper indexes
+              orderAction,
+            ]);
           }}
-        /> */}
+        />
       </GridItem>
     </Grid>
   );

@@ -11,6 +11,7 @@ import {
 } from "react-swipeable-list";
 import "react-swipeable-list/dist/styles.css";
 import { OrderModel } from "../../../models/order";
+import { Action } from "../waiter_page";
 
 interface Props {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ interface Props {
   id: string;
   list: OrderModel[];
   onClick: (orderAction: OrderModel) => void;
+  onReducer?: React.Dispatch<Action>;
 }
 
 const SwipeableItem: React.FC<Props> = (props) => {
@@ -27,7 +29,17 @@ const SwipeableItem: React.FC<Props> = (props) => {
     onClick: (orderAction: OrderModel) => void
   ) => (
     <TrailingActions>
-      <SwipeAction destructive={true} onClick={() => onClick(orderAction)}>
+      <SwipeAction
+        destructive={true}
+        onClick={() => {
+          onClick(orderAction);
+
+          /*props.onReducer!({
+            type: 0,
+            payload: orderAction
+          });*/
+        }}
+      >
         <Box bg="red.200">
           <Center justifyContent="justify-center" display="row" d="flex" px="1">
             {props.icon}
