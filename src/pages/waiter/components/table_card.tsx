@@ -6,7 +6,7 @@ import {
 } from "react-swipeable-list";
 import "react-swipeable-list/dist/styles.css";
 
-import { FaArrowAltCircleDown } from "react-icons/fa";
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./swipeable_item";
 import { OrderModel } from "../../../models/order";
 import { TableOrderModel } from "../../../models/tableorder";
@@ -48,7 +48,7 @@ const TableCard: React.FC<Props> = (props) => {
           >
             <SwipeableItem
               children={<Text>item</Text>}
-              swipeChild={<Text>OUT</Text>}
+              swipeChild={<Text>DONE</Text>}
               icon={<FaArrowAltCircleDown />}
               id="1"
               list={props.table.pending}
@@ -65,8 +65,8 @@ const TableCard: React.FC<Props> = (props) => {
           <Box w="100%" bg="green.200">
             <SwipeableItem
               children={<Text>item</Text>}
-              swipeChild={<Text>OUT</Text>}
-              icon={<FaArrowAltCircleDown />}
+              swipeChild={<Text>BACK</Text>}
+              icon={<FaArrowAltCircleUp />}
               id="1"
               list={props.table.finished}
               onClick={function (orderAction: OrderModel): void {

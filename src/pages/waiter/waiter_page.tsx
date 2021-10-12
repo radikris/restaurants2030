@@ -133,13 +133,14 @@ export default function WaiterPage() {
       <GridItem colSpan={1} bg="tomato">
         <SwipeableItem
           children={<DoneOrderCard />}
-          swipeChild={<Text>OUT</Text>}
+          swipeChild={<Text>DONE</Text>}
           icon={<FaArrowAltCircleLeft />}
           id="1"
           list={orders}
           onClick={function (orderAction: OrderModel): void {
+            console.log(...tableOrders[orderAction.table - 1].finished);
             setNewFinished(orderAction.table, [
-              ...allTablesOrders[orderAction.table - 1].finished,  //check proper indexes
+              ...tableOrders[orderAction.table - 1].finished, //check proper indexes
               orderAction,
             ]);
           }}

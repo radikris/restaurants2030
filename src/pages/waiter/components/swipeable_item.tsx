@@ -50,8 +50,6 @@ const SwipeableItem: React.FC<Props> = (props) => {
     </TrailingActions>
   );
 
-  console.log(props.list);
-
   return (
     <div>
       {props.list.map((order, key) => (
