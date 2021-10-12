@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -24,26 +24,7 @@ import SwipeableItem from "./components/swipeable_item";
 import { OrderModel } from "../../models/order";
 import { TableOrderModel } from "../../models/tableorder";
 
-var allTablesOrders: TableOrderModel[] = [
-  {
-    table: 1,
-    pending: [{ title: "Alma", price: 12, id: "1", table: 1 }],
-    finished: [{ title: "Körte", price: 23, id: "1", table: 1 }],
-  },
-  {
-    table: 2,
-    pending: [
-      { title: "Banán", price: 34, id: "1", table: 2 },
-      { title: "Eper", price: 45, id: "2", table: 2 },
-    ],
-    finished: [{ title: "Szilva", price: 56, id: "1", table: 2 }],
-  },
-  {
-    table: 3,
-    pending: [{ title: "Majom", price: 67, id: "1", table: 3 }],
-    finished: [{ title: "Kenyérfa", price: 89, id: "1", table: 3 }],
-  },
-];
+var allTablesOrders: TableOrderModel[] = [];
 
 var orders: OrderModel[] = [
   { title: "BanánASD", price: 34, id: "1", table: 1 },
@@ -88,6 +69,14 @@ export default function WaiterPage() {
     reducerFunc,
     allTablesOrders
   );
+
+  useEffect(() => {
+    fetch("http://localhost:3001/allTableOrders")
+      .then((res) => res.json())
+      .then((data: TableOrderModel[]) => {
+        setTableOrders(data);
+      });
+  }, []);
 
   function setNewFinished(idx: number, list: OrderModel[]) {
     let items = [...tableOrders];
