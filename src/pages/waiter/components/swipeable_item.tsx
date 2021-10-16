@@ -1,8 +1,7 @@
-import { Box, Center, Text } from "@chakra-ui/react";
+import { Box, Center, Flex } from "@chakra-ui/react";
 import React from "react";
 
 import {
-  LeadingActions,
   SwipeableList,
   SwipeableListItem,
   SwipeAction,
@@ -11,7 +10,6 @@ import {
 } from "react-swipeable-list";
 import "react-swipeable-list/dist/styles.css";
 import { OrderModel } from "../../../models/order";
-import { Action } from "../waiter_page";
 
 interface Props {
   children: React.ReactNode;
@@ -20,24 +18,16 @@ interface Props {
   id: string;
   list: OrderModel[];
   onClick: (orderAction: OrderModel) => void;
-  onReducer?: React.Dispatch<Action>;
 }
 
-const SwipeableItem: React.FC<Props> = (props) => {
-  const trailingActions = (
-    orderAction: OrderModel,
-    onClick: (orderAction: OrderModel) => void
-  ) => (
+export default function SwipeableItem(props: Props) {
+
+  const trailingActions = (orderAction: OrderModel, onClick: (orderAction: OrderModel) => void) => (
     <TrailingActions>
       <SwipeAction
         destructive={true}
         onClick={() => {
           onClick(orderAction);
-
-          /*props.onReducer!({
-            type: 0,
-            payload: orderAction
-          });*/
         }}
       >
         <Box bg="red.200">
@@ -51,24 +41,19 @@ const SwipeableItem: React.FC<Props> = (props) => {
   );
 
   return (
-    <div>
-      {props.list.map((order, key) => (
+    <Flex>
         <SwipeableList
-          key={key}
-          fullSwipe={false}
+          fullSwipe={true}
           style={{ backgroundColor: "orange.200" }}
-          type={ListType.IOS}
-          threshold={0.1}
+          type={ListType.ANDROID}
+          threshold={0.5}
         >
-          <SwipeableListItem
-            trailingActions={trailingActions(order, props.onClick)}
-          >
+        {props.list.map((order, key) => (
+          <SwipeableListItem key={order.title} trailingActions={trailingActions(order, props.onClick)}>
             {order.title}
           </SwipeableListItem>
+        ))}
         </SwipeableList>
-      ))}
-    </div>
+    </Flex>
   );
 };
-
-export default SwipeableItem;

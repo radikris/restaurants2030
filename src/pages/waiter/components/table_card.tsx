@@ -1,9 +1,4 @@
-import { Box, Button, Center, Divider, Text, VStack } from "@chakra-ui/react";
-import {
-  SwipeAction,
-  TrailingActions,
-  Type as ListType,
-} from "react-swipeable-list";
+import { Box, Button, Divider, Text, VStack } from "@chakra-ui/react";
 import "react-swipeable-list/dist/styles.css";
 
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
@@ -11,17 +6,15 @@ import SwipeableItem from "./swipeable_item";
 import { OrderModel } from "../../../models/order";
 import { TableOrderModel } from "../../../models/tableorder";
 
-import React, { Dispatch, SetStateAction } from "react";
-import { Action } from "../waiter_page";
+import React from "react";
 
 interface Props {
   table: TableOrderModel;
-  setFinishedTable: (tableIdx: number, newList: OrderModel[]) => void;
-  setPendingTable: (tableIdx: number, newList: OrderModel[]) => void;
-  setReducerFunc: React.Dispatch<Action>;
+  addToPending: (order: OrderModel) => void;
+  addToFinished: (order: OrderModel) => void;
 }
 
-const TableCard: React.FC<Props> = (props) => {
+export default function TableCard(props: Props) {
   return (
     <Box
       maxW={"270px"}
@@ -53,12 +46,8 @@ const TableCard: React.FC<Props> = (props) => {
               id="1"
               list={props.table.pending}
               onClick={function (orderAction: OrderModel): void {
-                props.setFinishedTable(orderAction.table, [
-                  ...props.table.finished,
-                  orderAction,
-                ]);
+                props.addToFinished(orderAction);
               }}
-              onReducer={props.setReducerFunc}
             />
           </Box>
           <Divider variant="dashed" />
@@ -70,12 +59,8 @@ const TableCard: React.FC<Props> = (props) => {
               id="1"
               list={props.table.finished}
               onClick={function (orderAction: OrderModel): void {
-                props.setPendingTable(orderAction.table, [
-                  ...props.table.pending,
-                  orderAction,
-                ]);
+                props.addToPending(orderAction);
               }}
-              onReducer={props.setReducerFunc}
             />
           </Box>
         </VStack>
@@ -97,5 +82,3 @@ const TableCard: React.FC<Props> = (props) => {
     </Box>
   );
 };
-
-export default TableCard;

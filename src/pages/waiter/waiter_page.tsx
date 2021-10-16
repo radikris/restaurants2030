@@ -1,105 +1,83 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useState, useEffect, useReducer, useCallback } from "react";
 
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import {
-  VStack,
   Text,
-  Box,
-  Flex,
-  Center,
-  Spacer,
-  HStack,
   Wrap,
-  WrapItem,
-  SimpleGrid,
   Grid,
-  GridItem,
+  GridItem
 } from "@chakra-ui/react";
 import TableCard from "./components/table_card";
 import DoneOrderCard from "./components/done_order_card";
-import { IndexKind } from "typescript";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./components/swipeable_item";
 import { OrderModel } from "../../models/order";
 import { TableOrderModel } from "../../models/tableorder";
+import produce from "immer";
 
-var allTablesOrders: TableOrderModel[] = [];
-
-var orders: OrderModel[] = [
-  { title: "BanánASD", price: 34, id: "1", table: 1 },
-  { title: "EperASD", price: 45, id: "2", table: 2 },
-  { title: "KörteASD", price: 45, id: "2", table: 2 },
-  { title: "AlmaASD", price: 45, id: "2", table: 3 },
-];
-
-export type Action = {
-  type: number;
-  payload: OrderModel;
-};
-
-function reducerFunc(state: TableOrderModel[], action: Action) {
-  const { type, payload } = action;
-
-  switch (type) {
-    case 0:
-      return {
-        ...state,
-        pending: [...state[0].pending, payload],
-      };
-    case 1:
-      return {
-        ...state,
-        finished: [...state[0].finished, payload],
-      };
-    default:
-      return state;
-  }
+enum ActionTypes {
+  ADD_TO_FINISHED = "AddToFinished",
+  ADD_TO_PENDING = "AddToPending",
+  INITIAL = "Initial"
 }
 
-interface Props {
-  name: string;
+type Action = {
+  type: ActionTypes;
+  order: OrderModel;
+  allOrders?: TableOrderModel[];
 }
 
 export default function WaiterPage() {
-  const [tableOrders, setTableOrders] =
-    useState<TableOrderModel[]>(allTablesOrders);
+  const [tableOrders, tableOrdersDispatch] = useReducer(produce((draft: TableOrderModel[], action: Action) => {
+    const idx = draft.findIndex(x => x.table === action.order.table);
+    var mod = draft[idx];
+    switch (action.type) {
+      case ActionTypes.ADD_TO_PENDING: {
+        mod.pending.push(action.order);
+        mod.finished.splice(mod.finished.findIndex(x => x.id === action.order.id), 1);
+        break;
+      }
+      case ActionTypes.ADD_TO_FINISHED: {
+        mod.finished.push(action.order);
+        mod.pending.splice(mod.pending.findIndex(x => x.id === action.order.id), 1);
+        break;
+      }
+      case ActionTypes.INITIAL: {
+        if (action.allOrders !== undefined) {
+          action.allOrders.forEach((value, index) => (
+            draft.push(value)
+          ));
+        }
+        break;
+      }
+    }
+  }), [], undefined);
 
-  const [tableOrdersReducer, setTableOrderReducer] = useReducer(
-    reducerFunc,
-    allTablesOrders
-  );
+  const [allPendingOrder, setAllPendingOrders] = useState<OrderModel[]>([]);
+
+  useEffect(() => {
+    var returnArray: OrderModel[] = [];
+    tableOrders.forEach((order, index) => (
+      returnArray = returnArray.concat(order.pending)
+    ));
+    setAllPendingOrders(returnArray);
+  }, [tableOrders]);
+
+  const handleAddToPending = useCallback((order: OrderModel) => {
+    tableOrdersDispatch({type: ActionTypes.ADD_TO_PENDING, order: order});
+  }, []);
+
+  const handleAddToFinished = useCallback((order: OrderModel) => {
+    tableOrdersDispatch({type: ActionTypes.ADD_TO_FINISHED, order: order});
+  }, []);
 
   useEffect(() => {
     fetch("http://localhost:3001/allTableOrders")
       .then((res) => res.json())
       .then((data: TableOrderModel[]) => {
-        setTableOrders(data);
+        tableOrdersDispatch({type: ActionTypes.INITIAL, order: { title: "", price: -1, id: "-1", table: -1 }, allOrders: data})
       });
   }, []);
-
-  function setNewFinished(idx: number, list: OrderModel[]) {
-    let items = [...tableOrders];
-    // 2. Make a shallow copy of the item you want to mutate
-    let item = { ...items[idx - 1] };
-    // 3. Replace the property you're intested in
-    item.finished = list;
-    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-    items[idx - 1] = item;
-    // 5. Set the state to our new copy
-    setTableOrders(items);
-  }
-  function setNewPending(idx: number, list: OrderModel[]) {
-    let items = [...tableOrders];
-    // 2. Make a shallow copy of the item you want to mutate
-    let item = { ...items[idx - 1] };
-    // 3. Replace the property you're intested in
-    item.pending = list;
-    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-    items[idx - 1] = item;
-    // 5. Set the state to our new copy
-    setTableOrders(items);
-  }
 
   return (
     <Grid
@@ -111,29 +89,25 @@ export default function WaiterPage() {
         <Wrap>
           {tableOrders.map((item, index) => (
             <TableCard
+              key={index}
               table={item}
-              setFinishedTable={setNewFinished}
-              setPendingTable={setNewPending}
-              setReducerFunc={setTableOrderReducer}
+              addToFinished={handleAddToFinished}
+              addToPending={handleAddToPending}
             />
           ))}
         </Wrap>
       </GridItem>
       <GridItem colSpan={1} bg="tomato">
         <SwipeableItem
-          children={<DoneOrderCard />}
-          swipeChild={<Text>DONE</Text>}
-          icon={<FaArrowAltCircleLeft />}
-          id="1"
-          list={orders}
-          onClick={function (orderAction: OrderModel): void {
-            console.log(...tableOrders[orderAction.table - 1].finished);
-            setNewFinished(orderAction.table, [
-              ...tableOrders[orderAction.table - 1].finished, //check proper indexes
-              orderAction,
-            ]);
-          }}
-        />
+              children={<DoneOrderCard />}
+              swipeChild={<Text>DONE</Text>}
+              icon={<FaArrowAltCircleUp />}
+              id="1"
+              list={allPendingOrder}
+              onClick={function (orderAction: OrderModel): void {
+                handleAddToFinished(orderAction);
+              }}
+          />
       </GridItem>
     </Grid>
   );
