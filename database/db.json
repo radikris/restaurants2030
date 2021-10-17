@@ -1,0 +1,100 @@
+{
+    "orders": [
+      {
+        "id": 1,
+        "title": "Banan",
+        "price": "34",
+        "table": 2
+      },
+      {
+        "id": 2,
+        "title": "Eper",
+        "price": "134",
+        "table": 2
+      },
+      {
+        "id": 3,
+        "title": "Alma",
+        "price": "334",
+        "table": 1
+      },
+      {
+        "id": 4,
+        "title": "Korte",
+        "price": "344",
+        "table": 1
+      },
+      {
+        "id": 5,
+        "title": "Kivi",
+        "price": "144",
+        "table": 3
+      },
+      {
+        "id": 6,
+        "title": "Citrom",
+        "price": "14",
+        "table": 2
+      }
+    ],
+    
+    "allTableOrders": [
+     
+      {
+        "table": 1,
+        "pending": [
+          {
+            "id": 3,
+            "title": "Alma",
+            "price": "334",
+            "table": 1
+          }
+        ],
+        "finished": [
+          {
+            "id": 4,
+            "title": "Korte",
+            "price": "344",
+            "table": 1
+          }
+        ]
+      },
+      {
+        "table": 2,
+        "pending": [
+          {
+            "id": 1,
+            "title": "Banan",
+            "price": "34",
+            "table": 2
+          },
+          {
+            "id": 2,
+            "title": "Eper",
+            "price": "134",
+            "table": 2
+          }
+        ],
+        "finished": [
+          {
+            "id": 6,
+            "title": "Citrom",
+            "price": "14",
+            "table": 2
+          }
+        ]
+      },
+      {
+        "table": 3,
+        "pending": [
+          {
+            "id": 5,
+            "title": "Kivi",
+            "price": "144",
+            "table": 3
+          }
+        ],
+        "finished": []
+      }
+    ]
+  }
