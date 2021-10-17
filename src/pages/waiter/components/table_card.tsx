@@ -1,12 +1,27 @@
-import { Box, Button, Divider, Text, VStack } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Center,
+  Grid,
+  HStack,
+  VStack,
+  Text,
+  Divider,
+  Button,
+} from "@chakra-ui/react";
+
 import "react-swipeable-list/dist/styles.css";
 
-import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
+import {
+  FaArrowAltCircleDown,
+  FaArrowAltCircleUp,
+  FaPlus,
+} from "react-icons/fa";
 import SwipeableItem from "./swipeable_item";
 import { OrderModel } from "../../../models/order";
 import { TableOrderModel } from "../../../models/tableorder";
 
-import React from "react";
+import AddOrderCard from "./add_order_card";
 
 interface Props {
   table: TableOrderModel;
@@ -32,6 +47,14 @@ export default function TableCard(props: Props) {
     >
       <Box p={6}>
         <VStack spacing="2px">
+          <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+            <Box />
+            <Badge fontSize="md" mb={1} mr={3}>
+              Table {props.table.table}
+            </Badge>
+            <AddOrderCard />
+          </Grid>
+
           <Box
             w="100%"
             bg="orange.200"
@@ -81,4 +104,4 @@ export default function TableCard(props: Props) {
       </Box>
     </Box>
   );
-};
+}
