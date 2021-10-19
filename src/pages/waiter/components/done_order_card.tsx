@@ -1,4 +1,4 @@
-import { Badge, Box, Divider, Flex, Spacer, Text } from "@chakra-ui/react";
+import { Badge, Box, Divider, Text } from "@chakra-ui/react";
 import React from "react";
 
 export interface Props {
@@ -17,7 +17,7 @@ export default function DoneOrderCard(props: Props) {
         </Text>
         {props.showTable && (
           <Badge my="1" fontSize="0.8em" colorScheme="green" variant="solid">
-            {props.tableNum}
+            TABLE {props.tableNum}
           </Badge>
         )}
       </Box>

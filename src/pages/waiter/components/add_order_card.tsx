@@ -1,33 +1,23 @@
 import {
-  Avatar,
   Box,
   Button,
-  ButtonGroup,
   Text,
   Center,
   Flex,
-  HStack,
   Popover,
   PopoverArrow,
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
   PopoverFooter,
-  PopoverHeader,
   Spacer,
   PopoverTrigger,
   Portal,
 } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
-import { set } from "immer/dist/utils/common";
 import React from "react";
 import { FaPlus } from "react-icons/fa";
 import { OrderModel } from "../../../models/order";
-
-interface Props {
-  children: React.ReactNode;
-  setPendingTable: (tableIdx: number, newList: OrderModel[]) => void;
-}
 
 export interface Item {
   label: string;
@@ -55,28 +45,15 @@ const AddOrderCard = (props: AddOrderProps) => {
   const [pickerItems, setPickerItems] = React.useState(countries);
   const [selectedItems, setSelectedItems] = React.useState<Item[]>([]);
 
-  const alma = { value: "asd", label: "asd" };
-
-  const [almaList, setAlmaList] = React.useState<Item[]>([]);
-
   const handleCreateItem = (item: Item) => {
     setPickerItems((curr) => [...curr, item]);
     setSelectedItems((curr) => [...curr, item]);
   };
 
-  const findLastAddedElement = (selectedItems: Item[], lastItems: Item[]) => {
-    if (selectedItems.length < lastItems.length) {
-      let difference = lastItems.filter((x) => !selectedItems.includes(x));
-      return difference[0];
-    }
-
-    return selectedItems[selectedItems.length - 1];
-  };
-
-  const handleSelectedItemsChange = (selectedItems?: Item) => {
+  const handleSelectedItemsChange = (selectedItems?: Item[]) => {
     if (selectedItems) {
       console.log(selectedItems!);
-      setAlmaList([...almaList, selectedItems!]);
+      setSelectedItems(selectedItems);
     }
   };
 
@@ -119,13 +96,11 @@ const AddOrderCard = (props: AddOrderProps) => {
               label="Search your order or click dropdown"
               placeholder="Order name"
               onCreateItem={handleCreateItem}
-              selectedItems={almaList}
+              selectedItems={selectedItems}
               itemRenderer={customRender}
               items={pickerItems}
               onSelectedItemsChange={(changes) => {
-                handleSelectedItemsChange(
-                  findLastAddedElement(changes.selectedItems!, almaList)
-                );
+                handleSelectedItemsChange(changes.selectedItems);
               }}
             />
           </PopoverBody>

@@ -10,7 +10,6 @@ import {
 } from "react-swipeable-list";
 import "react-swipeable-list/dist/styles.css";
 import { OrderModel } from "../../../models/order";
-import DoneOrderCard from "./done_order_card";
 
 interface Props {
   children: (orderName: string, tableNum: number) => React.ReactNode;

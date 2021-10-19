@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useReducer, useCallback } from "react";
 
 import "react-multi-carousel/lib/styles.css";
-import { Text, Wrap, Grid, GridItem } from "@chakra-ui/react";
+import { Text, Wrap, Grid, GridItem, Center } from "@chakra-ui/react";
 import TableCard from "./components/table_card";
 import DoneOrderCard from "./components/done_order_card";
-import { FaArrowAltCircleUp } from "react-icons/fa";
+import { FaArrowAltCircleUp, FaAngleDown, FaAngleUp } from "react-icons/fa";
 import SwipeableItem from "./components/swipeable_item";
 import { OrderModel } from "../../models/order";
 import { TableOrderModel } from "../../models/tableorder";
@@ -53,6 +53,19 @@ export default function WaiterPage() {
   );
 
   const [allPendingOrder, setAllPendingOrders] = useState<OrderModel[]>([]);
+  const [isDescending, setIsDescending] = useState<boolean>(true);
+
+  const handleSortList = () => {
+    const retValue = isDescending ? 1 : -1;
+
+    const sortedList = allPendingOrder.sort((a, b) =>
+      a.table > b.table ? retValue : -1 * retValue
+    );
+
+    console.log(isDescending);
+    setIsDescending(!isDescending);
+    setAllPendingOrders(sortedList);
+  };
 
   useEffect(() => {
     var returnArray: OrderModel[] = [];
@@ -88,7 +101,12 @@ export default function WaiterPage() {
       templateColumns="repeat(5, 1fr)"
       gap={4}
     >
-      <GridItem colSpan={4} bg="papayawhip" p={2}>
+      <GridItem colSpan={4} bg="yellow.50" p={2}>
+        <Center mx={1}>
+          <Text my={3} fontSize={"2xl"} fontWeight={"bold"} color={"grey.700"}>
+            Restaurant's tables
+          </Text>
+        </Center>
         <Wrap>
           {tableOrders.map((item, index) => (
             <TableCard
@@ -100,7 +118,20 @@ export default function WaiterPage() {
           ))}
         </Wrap>
       </GridItem>
-      <GridItem colSpan={1} bg="tomato">
+      <GridItem colSpan={1} bg="red.200">
+        <Center mx={1}>
+          <Text
+            my={3}
+            mx={3}
+            fontSize={"2xl"}
+            fontWeight={"bold"}
+            color={"grey.700"}
+          >
+            Finished orders
+          </Text>
+          {isDescending && <FaAngleUp onClick={handleSortList} />}
+          {!isDescending && <FaAngleDown onClick={handleSortList} />}
+        </Center>
         <SwipeableItem
           children={(orderName, tableNum) => (
             <DoneOrderCard

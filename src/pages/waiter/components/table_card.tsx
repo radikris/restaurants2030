@@ -1,9 +1,7 @@
 import {
   Badge,
   Box,
-  Center,
   Grid,
-  HStack,
   VStack,
   Text,
   Divider,
@@ -12,11 +10,7 @@ import {
 
 import "react-swipeable-list/dist/styles.css";
 
-import {
-  FaArrowAltCircleDown,
-  FaArrowAltCircleUp,
-  FaPlus,
-} from "react-icons/fa";
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./swipeable_item";
 import { OrderModel } from "../../../models/order";
 import { TableOrderModel } from "../../../models/tableorder";
