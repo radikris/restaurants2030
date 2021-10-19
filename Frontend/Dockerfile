@@ -1,6 +1,8 @@
 FROM node:alpine
 
-WORKDIR /restaurants2030
+WORKDIR /app
+
+ENV PATH /app/node_modules/.bin:$PATH
 
 COPY package.json ./
 COPY package-lock.json ./
@@ -8,6 +10,6 @@ COPY package-lock.json ./
 RUN npm install
 RUN npm install react-scripts
 
-COPY ./ ./
+COPY . ./
 
 CMD ["npm", "run", "start"]
