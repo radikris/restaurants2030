@@ -3,15 +3,13 @@ import "react-swipeable-list/dist/styles.css";
 
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./swipeable_item";
-import { OrderModel } from "../../../models/order";
-import { TableOrderModel } from "../../../models/tableorder";
 
 import React from "react";
+import { Order, OrderStatus } from "../waiter_page";
 
 interface Props {
-  table: TableOrderModel;
-  addToPending: (order: OrderModel) => void;
-  addToFinished: (order: OrderModel) => void;
+  table: Order[];
+  changeStatus: (order: Order, status: OrderStatus) => void;
 }
 
 export default function TableCard(props: Props) {
@@ -39,16 +37,16 @@ export default function TableCard(props: Props) {
             display="table-column"
             justifyContent="justify-start"
           >
-            <SwipeableItem
+            {
+              <SwipeableItem
               children={<Text>item</Text>}
               swipeChild={<Text>DONE</Text>}
               icon={<FaArrowAltCircleDown />}
-              id="1"
-              list={props.table.pending}
-              onClick={function (orderAction: OrderModel): void {
-                props.addToFinished(orderAction);
+              list={[...props.table.filter(x => x.orderStatus === OrderStatus.InProgress || x.orderStatus === OrderStatus.Ready)]}
+              onClick={function (orderAction: Order): void {
+                props.changeStatus(orderAction, OrderStatus.Served);
               }}
-            />
+            />}
           </Box>
           <Divider variant="dashed" />
           <Box w="100%" bg="green.200">
@@ -56,10 +54,9 @@ export default function TableCard(props: Props) {
               children={<Text>item</Text>}
               swipeChild={<Text>BACK</Text>}
               icon={<FaArrowAltCircleUp />}
-              id="1"
-              list={props.table.finished}
-              onClick={function (orderAction: OrderModel): void {
-                props.addToPending(orderAction);
+              list={[...props.table.filter(x => x.orderStatus === OrderStatus.Served)]}
+              onClick={function (orderAction: Order): void {
+                props.changeStatus(orderAction, OrderStatus.Ready);
               }}
             />
           </Box>

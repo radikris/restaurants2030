@@ -11,73 +11,113 @@ import TableCard from "./components/table_card";
 import DoneOrderCard from "./components/done_order_card";
 import { FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./components/swipeable_item";
-import { OrderModel } from "../../models/order";
-import { TableOrderModel } from "../../models/tableorder";
 import produce from "immer";
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
-enum ActionTypes {
-  ADD_TO_FINISHED = "AddToFinished",
-  ADD_TO_PENDING = "AddToPending",
-  INITIAL = "Initial"
+export enum ActionTypes {
+  INITIAL = "Initial",
+  ORDER_STATUS_CHANGED = "OrderStatusChanged"
 }
 
-type Action = {
+export enum OrderStatus {
+  InProgress = 0,
+  Ready = 1,
+  Served = 2
+}
+
+export interface Order {
+  id: number;
+  table: number;
+  name: string;
+  price: number;
+  orderStatus: OrderStatus;
+}
+
+export type OrderAction = {
   type: ActionTypes;
-  order: OrderModel;
-  allOrders?: TableOrderModel[];
+  order?: Order;
+  orders?: Order[];
 }
 
 export default function WaiterPage() {
-  const [tableOrders, tableOrdersDispatch] = useReducer(produce((draft: TableOrderModel[], action: Action) => {
-    const idx = draft.findIndex(x => x.table === action.order.table);
-    var mod = draft[idx];
+  const [tableOrdersRemastered, tableOrdersRemasteredDispatch] = useReducer(produce((draft: Map<number, Order[]>, action: OrderAction) => {
     switch (action.type) {
-      case ActionTypes.ADD_TO_PENDING: {
-        mod.pending.push(action.order);
-        mod.finished.splice(mod.finished.findIndex(x => x.id === action.order.id), 1);
-        break;
-      }
-      case ActionTypes.ADD_TO_FINISHED: {
-        mod.finished.push(action.order);
-        mod.pending.splice(mod.pending.findIndex(x => x.id === action.order.id), 1);
-        break;
-      }
       case ActionTypes.INITIAL: {
-        if (action.allOrders !== undefined) {
-          action.allOrders.forEach((value, index) => (
-            draft.push(value)
-          ));
+        if (action.orders !== undefined) {
+          action.orders.forEach((order: Order) => {
+            var table = draft.get(order.table);
+            if (table !== undefined) {
+              table.push(order);
+            } else {
+              draft.set(order.table, [order]);
+            }
+          });
+        }
+        break;
+      }
+      case ActionTypes.ORDER_STATUS_CHANGED: {
+        if (action.order !== undefined) {
+          var table = draft.get(action.order.table);
+          if (table !== undefined) {
+            var idx = table.findIndex(x => x.id === action.order?.id);
+            table[idx] = action.order;
+          }
         }
         break;
       }
     }
-  }), [], undefined);
+  }), new Map<number, Order[]>(), undefined);
 
-  const [allPendingOrder, setAllPendingOrders] = useState<OrderModel[]>([]);
+  const handleChangeStatus = useCallback((order: Order) => {
+    tableOrdersRemasteredDispatch({type: ActionTypes.ORDER_STATUS_CHANGED, order});
+  }, []);
+
+  const handleInitial = useCallback((allOrders: Order[]) => {
+    tableOrdersRemasteredDispatch({type: ActionTypes.INITIAL, orders: allOrders})
+  }, []);
+
+  const [connection, setConnection] = useState<null | HubConnection>(null);
 
   useEffect(() => {
-    var returnArray: OrderModel[] = [];
-    tableOrders.forEach((order, index) => (
-      returnArray = returnArray.concat(order.pending)
+    const connect = new HubConnectionBuilder()
+      .withUrl("http://localhost:5000/restauranthub")
+      .withAutomaticReconnect()
+      .configureLogging(LogLevel.Debug)
+      .build();
+
+    setConnection(connect);
+  }, []);
+
+  const handleChangeStatusInvoke = useCallback((order: Order, status: OrderStatus) => {
+    connection?.invoke("UpdateOrderStatus", { Id: order.id, OrderStatus: status });
+  }, [connection]);
+
+  useEffect(() => {
+    if (connection) {
+      connection.start().then(() => {
+        connection.on("AllOrders", (orders: Order[]) => {
+          handleInitial(orders);
+        });
+        connection.on("OrderStatusUpdated", (order: Order) => {
+          handleChangeStatus(order);
+        });
+
+        connection.invoke("GetAllOrders", { RestaurantId: 1 });
+      }).catch((error) => console.log(error));
+    }
+  }, [connection, handleChangeStatus, handleInitial]);
+
+  const [allPendingOrder, setAllPendingOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    var returnArray: Order[] = [];
+    tableOrdersRemastered.forEach((order, index) => (
+      returnArray = returnArray.concat(order.filter(x => x.orderStatus === OrderStatus.InProgress || x.orderStatus === OrderStatus.Ready))
     ));
     setAllPendingOrders(returnArray);
-  }, [tableOrders]);
+  }, [tableOrdersRemastered]);
 
-  const handleAddToPending = useCallback((order: OrderModel) => {
-    tableOrdersDispatch({type: ActionTypes.ADD_TO_PENDING, order: order});
-  }, []);
-
-  const handleAddToFinished = useCallback((order: OrderModel) => {
-    tableOrdersDispatch({type: ActionTypes.ADD_TO_FINISHED, order: order});
-  }, []);
-
-  useEffect(() => {
-    fetch("http://localhost:3001/allTableOrders")
-      .then((res) => res.json())
-      .then((data: TableOrderModel[]) => {
-        tableOrdersDispatch({type: ActionTypes.INITIAL, order: { title: "", price: -1, id: "-1", table: -1 }, allOrders: data})
-      });
-  }, []);
+  
 
   return (
     <Grid
@@ -87,27 +127,25 @@ export default function WaiterPage() {
     >
       <GridItem colSpan={4} bg="papayawhip" p={2}>
         <Wrap>
-          {tableOrders.map((item, index) => (
+          {Array.from(tableOrdersRemastered).map((orders) => (
             <TableCard
-              key={index}
-              table={item}
-              addToFinished={handleAddToFinished}
-              addToPending={handleAddToPending}
+              key={orders[0]}
+              table={orders[1]}
+              changeStatus={handleChangeStatusInvoke}
             />
           ))}
         </Wrap>
       </GridItem>
       <GridItem colSpan={1} bg="tomato">
-        <SwipeableItem
+        {<SwipeableItem
               children={<DoneOrderCard />}
               swipeChild={<Text>DONE</Text>}
               icon={<FaArrowAltCircleUp />}
-              id="1"
               list={allPendingOrder}
-              onClick={function (orderAction: OrderModel): void {
-                handleAddToFinished(orderAction);
+              onClick={function (orderAction: Order): void {
+                handleChangeStatusInvoke(orderAction, OrderStatus.Served);
               }}
-          />
+            />}
       </GridItem>
     </Grid>
   );
