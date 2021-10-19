@@ -1,8 +1,12 @@
 import {
+  Avatar,
   Box,
   Button,
   ButtonGroup,
+  Text,
   Center,
+  Flex,
+  HStack,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -10,10 +14,12 @@ import {
   PopoverContent,
   PopoverFooter,
   PopoverHeader,
+  Spacer,
   PopoverTrigger,
   Portal,
 } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
+import { set } from "immer/dist/utils/common";
 import React from "react";
 import { FaPlus } from "react-icons/fa";
 import { OrderModel } from "../../../models/order";
@@ -28,28 +34,73 @@ export interface Item {
   value: string;
 }
 const countries = [
-  { value: "ghana", label: "Ghana" },
-  { value: "nigeria", label: "Nigeria" },
-  { value: "kenya", label: "Kenya" },
-  { value: "southAfrica", label: "South Africa" },
-  { value: "unitedStates", label: "United States" },
-  { value: "canada", label: "Canada" },
-  { value: "germany", label: "Germany" },
+  { value: "Order1", label: "Order1" },
+  { value: "Order2", label: "Order2" },
+  { value: "Order3", label: "Order3" },
+  { value: "Order4", label: "Order4" },
+  { value: "Order5", label: "Order5" },
+  { value: "Order6", label: "Order6" },
+  { value: "Order7", label: "Order7" },
+  { value: "Order8", label: "Order8" },
+  { value: "Order9", label: "Order9" },
+  { value: "Order10", label: "Order10" },
 ];
 
-const AddOrderCard = () => {
+export interface AddOrderProps {
+  tableNum: number;
+  addNewOrders: (order: OrderModel) => void;
+}
+
+const AddOrderCard = (props: AddOrderProps) => {
   const [pickerItems, setPickerItems] = React.useState(countries);
   const [selectedItems, setSelectedItems] = React.useState<Item[]>([]);
+
+  const alma = { value: "asd", label: "asd" };
+
+  const [almaList, setAlmaList] = React.useState<Item[]>([]);
 
   const handleCreateItem = (item: Item) => {
     setPickerItems((curr) => [...curr, item]);
     setSelectedItems((curr) => [...curr, item]);
   };
 
-  const handleSelectedItemsChange = (selectedItems?: Item[]) => {
-    if (selectedItems) {
-      setSelectedItems(selectedItems);
+  const findLastAddedElement = (selectedItems: Item[], lastItems: Item[]) => {
+    if (selectedItems.length < lastItems.length) {
+      let difference = lastItems.filter((x) => !selectedItems.includes(x));
+      return difference[0];
     }
+
+    return selectedItems[selectedItems.length - 1];
+  };
+
+  const handleSelectedItemsChange = (selectedItems?: Item) => {
+    if (selectedItems) {
+      console.log(selectedItems!);
+      setAlmaList([...almaList, selectedItems!]);
+    }
+  };
+
+  const handleOrderAdd = () => {
+    selectedItems.forEach((item) => {
+      props.addNewOrders({
+        id: item.value,
+        table: props.tableNum,
+        title: item.label,
+        price: 12,
+      });
+    });
+
+    setSelectedItems([]);
+  };
+
+  const customRender = (selected: Item) => {
+    return (
+      <Flex spacing={5} justifyContent="space-between">
+        <Text>{selected.label}</Text>
+        <Spacer />
+        <Box></Box>
+      </Flex>
+    );
   };
 
   return (
@@ -62,23 +113,29 @@ const AddOrderCard = () => {
       <Portal>
         <PopoverContent>
           <PopoverArrow />
-          <PopoverHeader></PopoverHeader>
           <PopoverCloseButton />
           <PopoverBody>
             <CUIAutoComplete
               label="Search your order or click dropdown"
               placeholder="Order name"
               onCreateItem={handleCreateItem}
+              selectedItems={almaList}
+              itemRenderer={customRender}
               items={pickerItems}
-              selectedItems={selectedItems}
-              onSelectedItemsChange={(changes) =>
-                handleSelectedItemsChange(changes.selectedItems)
-              }
+              onSelectedItemsChange={(changes) => {
+                handleSelectedItemsChange(
+                  findLastAddedElement(changes.selectedItems!, almaList)
+                );
+              }}
             />
           </PopoverBody>
           <PopoverFooter>
             <Center>
-              <Button colorScheme="teal" variant="outline">
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                onClick={handleOrderAdd}
+              >
                 ADD ORDERS
               </Button>
             </Center>

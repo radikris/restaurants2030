@@ -22,6 +22,7 @@ import { OrderModel } from "../../../models/order";
 import { TableOrderModel } from "../../../models/tableorder";
 
 import AddOrderCard from "./add_order_card";
+import DoneOrderCard from "./done_order_card";
 
 interface Props {
   table: TableOrderModel;
@@ -52,7 +53,10 @@ export default function TableCard(props: Props) {
             <Badge fontSize="md" mb={1} mr={3}>
               Table {props.table.table}
             </Badge>
-            <AddOrderCard />
+            <AddOrderCard
+              addNewOrders={props.addToPending}
+              tableNum={props.table.table}
+            />
           </Grid>
 
           <Box
@@ -63,7 +67,14 @@ export default function TableCard(props: Props) {
             justifyContent="justify-start"
           >
             <SwipeableItem
-              children={<Text>item</Text>}
+              children={(orderName, tableNum) => (
+                <DoneOrderCard
+                  fontSize={"md"}
+                  orderName={orderName}
+                  tableNum={tableNum}
+                  showTable={false}
+                />
+              )}
               swipeChild={<Text>DONE</Text>}
               icon={<FaArrowAltCircleDown />}
               id="1"
@@ -76,7 +87,14 @@ export default function TableCard(props: Props) {
           <Divider variant="dashed" />
           <Box w="100%" bg="green.200">
             <SwipeableItem
-              children={<Text>item</Text>}
+              children={(orderName, tableNum) => (
+                <DoneOrderCard
+                  orderName={orderName}
+                  tableNum={tableNum}
+                  showTable={false}
+                  fontSize={"md"}
+                />
+              )}
               swipeChild={<Text>BACK</Text>}
               icon={<FaArrowAltCircleUp />}
               id="1"

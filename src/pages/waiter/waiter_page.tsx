@@ -30,18 +30,14 @@ export default function WaiterPage() {
       switch (action.type) {
         case ActionTypes.ADD_TO_PENDING: {
           mod.pending.push(action.order);
-          mod.finished.splice(
-            mod.finished.findIndex((x) => x.id === action.order.id),
-            1
-          );
+          let idx = mod.finished.findIndex((x) => x.id === action.order.id);
+          if (idx !== -1) mod.finished.splice(idx, 1);
           break;
         }
         case ActionTypes.ADD_TO_FINISHED: {
           mod.finished.push(action.order);
-          mod.pending.splice(
-            mod.pending.findIndex((x) => x.id === action.order.id),
-            1
-          );
+          let idx = mod.pending.findIndex((x) => x.id === action.order.id);
+          if (idx !== -1) mod.pending.splice(idx, 1);
           break;
         }
         case ActionTypes.INITIAL: {
@@ -106,7 +102,14 @@ export default function WaiterPage() {
       </GridItem>
       <GridItem colSpan={1} bg="tomato">
         <SwipeableItem
-          children={<DoneOrderCard />}
+          children={(orderName, tableNum) => (
+            <DoneOrderCard
+              orderName={orderName}
+              tableNum={tableNum}
+              showTable={true}
+              fontSize={"xl"}
+            />
+          )}
           swipeChild={<Text>DONE</Text>}
           icon={<FaArrowAltCircleUp />}
           id="1"
