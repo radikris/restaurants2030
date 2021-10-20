@@ -12,7 +12,7 @@ import "react-swipeable-list/dist/styles.css";
 import { Order } from "../waiter_page";
 
 interface Props {
-  children: React.ReactNode;
+  children: (orderName: string, tableNum: number) => React.ReactNode;
   swipeChild: React.ReactNode;
   icon: React.ReactNode;
   list: Order[];
@@ -50,10 +50,10 @@ export default function SwipeableItem(props: Props) {
           <SwipeableListItem 
             key={order.id} 
             trailingActions={trailingActions(order, props.onClick)}>
-            {order.name}
+              {props.children(order.name, order.table)}
           </SwipeableListItem>
           ))}
         </SwipeableList>
     </Flex>
   );
-};
+}

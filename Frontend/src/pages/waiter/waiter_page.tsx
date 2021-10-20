@@ -5,18 +5,20 @@ import {
   Text,
   Wrap,
   Grid,
-  GridItem
+  GridItem,
+  Center
 } from "@chakra-ui/react";
 import TableCard from "./components/table_card";
 import DoneOrderCard from "./components/done_order_card";
-import { FaArrowAltCircleUp } from "react-icons/fa";
+import { FaAngleDown, FaAngleUp, FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./components/swipeable_item";
 import produce from "immer";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 export enum ActionTypes {
   INITIAL = "Initial",
-  ORDER_STATUS_CHANGED = "OrderStatusChanged"
+  ORDER_STATUS_CHANGED = "OrderStatusChanged",
+  ADD_ORDER = "AddOrder"
 }
 
 export enum OrderStatus {
@@ -65,6 +67,15 @@ export default function WaiterPage() {
         }
         break;
       }
+      case ActionTypes.ADD_ORDER: {
+        if (action.order !== undefined) {
+          table = draft.get(action.order.table);
+          if (table !== undefined) {
+            table.push(action.order);
+          }
+        }
+        break;
+      }
     }
   }), new Map<number, Order[]>(), undefined);
 
@@ -74,6 +85,10 @@ export default function WaiterPage() {
 
   const handleInitial = useCallback((allOrders: Order[]) => {
     tableOrdersRemasteredDispatch({type: ActionTypes.INITIAL, orders: allOrders})
+  }, []);
+
+  const handleAddOrder = useCallback((order: Order) => {
+    tableOrdersRemasteredDispatch({type: ActionTypes.ADD_ORDER, order: order});
   }, []);
 
   const [connection, setConnection] = useState<null | HubConnection>(null);
@@ -108,6 +123,19 @@ export default function WaiterPage() {
   }, [connection, handleChangeStatus, handleInitial]);
 
   const [allPendingOrder, setAllPendingOrders] = useState<Order[]>([]);
+  const [isDescending, setIsDescending] = useState<boolean>(true);
+
+  const handleSortList = () => {
+    const retValue = isDescending ? 1 : -1;
+
+    const sortedList = allPendingOrder.sort((a, b) =>
+      a.table > b.table ? retValue : -1 * retValue
+    );
+
+    console.log(isDescending);
+    setIsDescending(!isDescending);
+    setAllPendingOrders(sortedList);
+  };
 
   useEffect(() => {
     var returnArray: Order[] = [];
@@ -131,21 +159,43 @@ export default function WaiterPage() {
             <TableCard
               key={orders[0]}
               table={orders[1]}
+              tableNumber={orders[0]}
+              addOrder={handleAddOrder}
               changeStatus={handleChangeStatusInvoke}
             />
           ))}
         </Wrap>
       </GridItem>
       <GridItem colSpan={1} bg="tomato">
-        {<SwipeableItem
-              children={<DoneOrderCard />}
+        <Center mx={1}>
+          <Text
+              my={3}
+              mx={3}
+              fontSize={"2xl"}
+              fontWeight={"bold"}
+              color={"grey.700"}
+            >
+              Finished orders
+            </Text>
+            {isDescending && <FaAngleUp onClick={handleSortList} />}
+            {!isDescending && <FaAngleDown onClick={handleSortList} />}
+        </Center>
+        <SwipeableItem
+              children={(orderName, tableNum) => (
+                <DoneOrderCard
+                  orderName={orderName}
+                  tableNum={tableNum}
+                  showTable={true}
+                  fontSize={"xl"}
+                />
+              )}
               swipeChild={<Text>DONE</Text>}
               icon={<FaArrowAltCircleUp />}
               list={allPendingOrder}
               onClick={function (orderAction: Order): void {
                 handleChangeStatusInvoke(orderAction, OrderStatus.Served);
               }}
-            />}
+        />
       </GridItem>
     </Grid>
   );
