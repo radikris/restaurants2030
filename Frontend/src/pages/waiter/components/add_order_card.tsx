@@ -17,7 +17,7 @@ import {
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
 import React from "react";
 import { FaPlus } from "react-icons/fa";
-import { OrderModel } from "../../../models/order";
+import { Order, OrderStatus } from "../waiter_page";
 
 export interface Item {
   label: string;
@@ -38,7 +38,7 @@ const countries = [
 
 export interface AddOrderProps {
   tableNum: number;
-  addNewOrders: (order: OrderModel) => void;
+  addNewOrders: (order: Order) => void;
 }
 
 const AddOrderCard = (props: AddOrderProps) => {
@@ -60,10 +60,11 @@ const AddOrderCard = (props: AddOrderProps) => {
   const handleOrderAdd = () => {
     selectedItems.forEach((item) => {
       props.addNewOrders({
-        id: item.value,
+        id: parseInt(item.value),
         table: props.tableNum,
-        title: item.label,
+        name: item.label,
         price: 12,
+        orderStatus: OrderStatus.InProgress
       });
     });
 
@@ -99,7 +100,7 @@ const AddOrderCard = (props: AddOrderProps) => {
               selectedItems={selectedItems}
               itemRenderer={customRender}
               items={pickerItems}
-              onSelectedItemsChange={(changes) => {
+              onSelectedItemsChange={(changes: any) => {
                 handleSelectedItemsChange(changes.selectedItems);
               }}
             />

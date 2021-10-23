@@ -12,16 +12,17 @@ import "react-swipeable-list/dist/styles.css";
 
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./swipeable_item";
-import { OrderModel } from "../../../models/order";
-import { TableOrderModel } from "../../../models/tableorder";
 
+import React from "react";
+import { Order, OrderStatus } from "../waiter_page";
 import AddOrderCard from "./add_order_card";
 import DoneOrderCard from "./done_order_card";
 
 interface Props {
-  table: TableOrderModel;
-  addToPending: (order: OrderModel) => void;
-  addToFinished: (order: OrderModel) => void;
+  table: Order[];
+  tableNumber: number;
+  addOrder: (order: Order) => void;
+  changeStatus: (order: Order, status: OrderStatus) => void;
 }
 
 export default function TableCard(props: Props) {
@@ -45,11 +46,11 @@ export default function TableCard(props: Props) {
           <Grid templateColumns="repeat(3, 1fr)" gap={6}>
             <Box />
             <Badge fontSize="md" mb={1} mr={3}>
-              Table {props.table.table}
+              Table {props.tableNumber}
             </Badge>
             <AddOrderCard
-              addNewOrders={props.addToPending}
-              tableNum={props.table.table}
+              addNewOrders={props.addOrder}
+              tableNum={props.tableNumber}
             />
           </Grid>
 
@@ -71,10 +72,9 @@ export default function TableCard(props: Props) {
               )}
               swipeChild={<Text>DONE</Text>}
               icon={<FaArrowAltCircleDown />}
-              id="1"
-              list={props.table.pending}
-              onClick={function (orderAction: OrderModel): void {
-                props.addToFinished(orderAction);
+              list={[...props.table.filter(x => x.orderStatus === OrderStatus.InProgress || x.orderStatus === OrderStatus.Ready)]}
+              onClick={function (orderAction: Order): void {
+                props.changeStatus(orderAction, OrderStatus.Served);
               }}
             />
           </Box>
@@ -91,10 +91,9 @@ export default function TableCard(props: Props) {
               )}
               swipeChild={<Text>BACK</Text>}
               icon={<FaArrowAltCircleUp />}
-              id="1"
-              list={props.table.finished}
-              onClick={function (orderAction: OrderModel): void {
-                props.addToPending(orderAction);
+              list={[...props.table.filter(x => x.orderStatus === OrderStatus.Served)]}
+              onClick={function (orderAction: Order): void {
+                props.changeStatus(orderAction, OrderStatus.Ready);
               }}
             />
           </Box>

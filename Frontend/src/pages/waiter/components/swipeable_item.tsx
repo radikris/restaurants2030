@@ -9,22 +9,18 @@ import {
   Type as ListType,
 } from "react-swipeable-list";
 import "react-swipeable-list/dist/styles.css";
-import { OrderModel } from "../../../models/order";
+import { Order } from "../waiter_page";
 
 interface Props {
   children: (orderName: string, tableNum: number) => React.ReactNode;
   swipeChild: React.ReactNode;
   icon: React.ReactNode;
-  id: string;
-  list: OrderModel[];
-  onClick: (orderAction: OrderModel) => void;
+  list: Order[];
+  onClick: (orderAction: Order) => void;
 }
 
 export default function SwipeableItem(props: Props) {
-  const trailingActions = (
-    orderAction: OrderModel,
-    onClick: (orderAction: OrderModel) => void
-  ) => (
+  const trailingActions = (orderAction: Order, onClick: (orderAction: Order) => void) => (
     <TrailingActions>
       <SwipeAction
         destructive={true}
@@ -44,21 +40,20 @@ export default function SwipeableItem(props: Props) {
 
   return (
     <Flex>
-      <SwipeableList
-        fullSwipe={true}
-        style={{ backgroundColor: "orange.200" }}
-        type={ListType.ANDROID}
-        threshold={0.5}
-      >
-        {props.list.map((order, key) => (
-          <SwipeableListItem
-            key={order.title}
-            trailingActions={trailingActions(order, props.onClick)}
-          >
-            {props.children(order.title, order.table)}
+        <SwipeableList
+          fullSwipe={true}
+          style={{ backgroundColor: "orange.200" }}
+          type={ListType.ANDROID}
+          threshold={0.5}
+        >
+        {props.list.map((order) => (
+          <SwipeableListItem 
+            key={order.id} 
+            trailingActions={trailingActions(order, props.onClick)}>
+              {props.children(order.name, order.table)}
           </SwipeableListItem>
-        ))}
-      </SwipeableList>
+          ))}
+        </SwipeableList>
     </Flex>
   );
 }
