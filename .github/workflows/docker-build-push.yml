@@ -38,7 +38,7 @@ jobs:
           file: ./Frontend/Dockerfile
           builder: ${{ steps.frontendBuilder.outputs.name }}
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/restaurants2030-Frontend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/restaurants2030-frontend:latest
       
       - name: Build and push Backend
         id: docker_build_backend
@@ -48,4 +48,4 @@ jobs:
           file: ./Backend/API/Dockerfile
           builder: ${{ steps.backendBuilder.outputs.name }}
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/restaurants2030-Backend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/restaurants2030-backend:latest
