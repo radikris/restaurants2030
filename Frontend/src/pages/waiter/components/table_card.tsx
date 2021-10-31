@@ -17,6 +17,7 @@ import React from "react";
 import { Order, OrderStatus } from "../waiter_page";
 import AddOrderCard from "./add_order_card";
 import DoneOrderCard from "./done_order_card";
+import TablePayModal from "./table_pay_modal";
 
 interface Props {
   table: Order[];
@@ -26,6 +27,12 @@ interface Props {
 }
 
 export default function TableCard(props: Props) {
+  const [isPayOpen, setIsPayOpen] = React.useState(false);
+
+  const toggleOpen = () => {
+    setIsPayOpen((prevPayOpen) => !prevPayOpen);
+  };
+
   return (
     <Box
       maxW={"270px"}
@@ -72,7 +79,13 @@ export default function TableCard(props: Props) {
               )}
               swipeChild={<Text>DONE</Text>}
               icon={<FaArrowAltCircleDown />}
-              list={[...props.table.filter(x => x.orderStatus === OrderStatus.InProgress || x.orderStatus === OrderStatus.Ready)]}
+              list={[
+                ...props.table.filter(
+                  (x) =>
+                    x.orderStatus === OrderStatus.InProgress ||
+                    x.orderStatus === OrderStatus.Ready
+                ),
+              ]}
               onClick={function (orderAction: Order): void {
                 props.changeStatus(orderAction, OrderStatus.Served);
               }}
@@ -91,7 +104,11 @@ export default function TableCard(props: Props) {
               )}
               swipeChild={<Text>BACK</Text>}
               icon={<FaArrowAltCircleUp />}
-              list={[...props.table.filter(x => x.orderStatus === OrderStatus.Served)]}
+              list={[
+                ...props.table.filter(
+                  (x) => x.orderStatus === OrderStatus.Served
+                ),
+              ]}
               onClick={function (orderAction: Order): void {
                 props.changeStatus(orderAction, OrderStatus.Ready);
               }}
@@ -104,6 +121,7 @@ export default function TableCard(props: Props) {
           mt={4}
           bg="gray.900"
           color={"white"}
+          onClick={toggleOpen}
           rounded={"md"}
           _hover={{
             transform: "translateY(-2px)",
@@ -112,6 +130,12 @@ export default function TableCard(props: Props) {
         >
           PAY
         </Button>
+        <TablePayModal
+          isOpen={isPayOpen}
+          table={props.table}
+          toggleOpen={toggleOpen}
+          tableNum={props.tableNumber}
+        />
       </Box>
     </Box>
   );
