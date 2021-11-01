@@ -1,6 +1,5 @@
 import React, { ChangeEvent } from "react";
 import { FaPlus } from "react-icons/fa";
-import { OrderModel } from "../../../models/order";
 import {
   Box,
   Button,
