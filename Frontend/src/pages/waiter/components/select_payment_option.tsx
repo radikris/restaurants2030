@@ -1,8 +1,6 @@
-import { Image } from "@chakra-ui/image";
 import { Box } from "@chakra-ui/layout";
 import {
   HStack,
-  Text,
   useRadio,
   useRadioGroup,
   UseRadioProps,
@@ -14,26 +12,6 @@ export interface Props {
   paymentOption: PaymentOption;
   isSelected: boolean;
 }
-
-// export default function SelectPaymentOption(props: Props) {
-//   return (
-//     <Box
-//       background={"grey.200"}
-//       h="150px"
-//       boxShadow={"xl"}
-//       rounded={"lg"}
-//       p={6}
-//       m={3}
-//       _hover={{
-//         transform: "scale(1.1)",
-//         boxShadow: "xxl",
-//         background: "white",
-//       }}
-//       border="12px"
-//       borderColor="white"
-//     ></Box>
-//   );
-// }
 
 interface RadioCardProps extends UseRadioProps {
   label: string;

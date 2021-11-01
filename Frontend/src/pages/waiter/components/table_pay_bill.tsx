@@ -1,14 +1,10 @@
-import { Button, Text, Image } from "@chakra-ui/react";
+import { Button, Text } from "@chakra-ui/react";
 import { Box, Center, Grid, GridItem, VStack } from "@chakra-ui/layout";
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { PaymentOption } from "../../../models/payment_option";
-import { $enum } from "ts-enum-util";
 import SelectPaymentOption from "./select_payment_option";
 import { Order } from "../waiter_page";
-import { formatter } from "../../../util/app_util";
 import TableBillList from "./table_bill_list";
-import Example from "./select_payment_option";
 
 export interface IProps {
   table: Order[];
