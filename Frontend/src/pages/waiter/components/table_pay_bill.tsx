@@ -69,7 +69,10 @@ export default function TablePayBill(props: IProps) {
               onClick={toggleSplitBill}
               p={1}
             >
-              <Text mx={1}>Do you want to split the bill?</Text>
+              {!isSplitBill && (
+                <Text mx={1}>Do you want to split the bill?</Text>
+              )}
+              {isSplitBill && <Text mx={1}>Back to only normal bill</Text>}
               <FaPlus />
             </Button>
 
