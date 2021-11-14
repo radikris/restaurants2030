@@ -64,7 +64,17 @@ namespace API.Hubs
         public async Task GetAllFoodDrink(GetAllFoodDrinkQuery query)
         {
             var foodDrinks = await _mediator.Send(query);
-            await Clients.Caller.SendAsync("AllOrders", foodDrinks);
+            var list = new List<FoodDrinkDTO>();
+            foodDrinks.ForEach(foodDrink => list.Add(new
+                FoodDrinkDTO
+            {
+                Id = foodDrink.Id,
+                Name = foodDrink.Name,
+                Price = foodDrink.Price,
+                Quantity=0,
+    
+            }));
+            await Clients.Caller.SendAsync("AllFoodDrinks", foodDrinks);
         }
     }
 }

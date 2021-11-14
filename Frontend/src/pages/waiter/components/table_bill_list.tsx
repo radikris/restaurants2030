@@ -1,7 +1,7 @@
 import { Box, Text, Button } from "@chakra-ui/react";
 import React from "react";
+import { Order } from "../../../models/order";
 import { formatter } from "../../../util/app_util";
-import { Order } from "../waiter_page";
 
 export interface Props {
   orders: Order[];

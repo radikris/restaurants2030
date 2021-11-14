@@ -60,6 +60,7 @@ export default function TableCard(props: Props) {
             </Badge>
             <AddOrderCard
               addNewOrders={props.addOrder}
+              foodDrinks={props.foodDrinks}
               tableNum={props.tableNumber}
             />
           </Grid>

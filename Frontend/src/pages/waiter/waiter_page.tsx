@@ -138,10 +138,11 @@ export default function WaiterPage() {
           });
 
           connection.invoke("GetAllOrders", { RestaurantId: 1 });
+          connection.invoke("GetAllFoodDrink", { RestaurantId: 1 });
         })
         .catch((error) => console.log(error));
     }
-  }, [connection, handleChangeStatus, handleInitial]);
+  }, [connection, handleChangeStatus, handleInitial, handleAllFoodDrink]);
 
   const [allPendingOrder, setAllPendingOrders] = useState<Order[]>([]);
   const [isDescending, setIsDescending] = useState<boolean>(true);

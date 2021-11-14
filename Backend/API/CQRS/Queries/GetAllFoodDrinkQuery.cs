@@ -15,7 +15,7 @@ namespace API.CQRS.Queries
     {
         public int RestaurantId { get; set; }
 
-        public class GetAllFoodDrinkQueryHandler : IRequestHandler<GetAllOrderQuery, List<FoodDrink>>
+        public class GetAllFoodDrinkQueryHandler : IRequestHandler<GetAllFoodDrinkQuery, List<FoodDrink>>
         {
             private readonly ApplicationDbContext _context;
 
@@ -24,7 +24,7 @@ namespace API.CQRS.Queries
                 _context = context;
             }
           
-            public async Task<List<FoodDrink>> Handle(GetAllOrderQuery request, CancellationToken cancellationToken)
+            public async Task<List<FoodDrink>> Handle(GetAllFoodDrinkQuery request, CancellationToken cancellationToken)
             {
                 return await _context.FoodsDrinks.Where(x => x.RestaurantId == request.RestaurantId).ToListAsync();
             }

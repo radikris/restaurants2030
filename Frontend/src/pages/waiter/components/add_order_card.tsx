@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import {
   Box,
@@ -30,40 +30,21 @@ import { FoodDrink } from "../../../models/food_drink";
 
 export interface AddOrderProps {
   tableNum: number;
+  foodDrinks: FoodDrink[];
   addNewOrders: (order: Order) => void;
 }
 
-const availableMenus = [
-  {
-    id: 1,
-    name: "Valami leves",
-    price: 10,
-    quantity: 0,
-  },
-  {
-    id: 2,
-    name: "Főzelék tes",
-    price: 21,
-    quantity: 0,
-  },
-  {
-    id: 3,
-    name: "Tésztaaaa is van",
-    price: 32,
-    quantity: 0,
-  },
-  {
-    id: 4,
-    name: "Csirke=chicken",
-    price: 43,
-    quantity: 0,
-  },
-];
+var availableMenus: FoodDrink[] = [];
 
 const AddOrderCard = (props: AddOrderProps) => {
   const [selectedItems, setSelectedItems] = React.useState<FoodDrink[]>([]);
-  const [sortedMenus, setSortedMenus] =
-    React.useState<FoodDrink[]>(availableMenus);
+
+  const [sortedMenus, setSortedMenus] = React.useState<FoodDrink[]>([]);
+
+  useEffect(() => {
+    availableMenus = props.foodDrinks;
+    setSortedMenus(props.foodDrinks);
+  }, [props.foodDrinks]);
 
   const changeOrderQuantity = (id: number, change: number) => {
     let findAddedItem = sortedMenus.findIndex((menu) => menu.id === id);
