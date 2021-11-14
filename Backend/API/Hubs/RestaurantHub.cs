@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using API.CQRS.Commands;
 using API.CQRS.Queries;
 using API.DTO;
+using API.Models;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
@@ -58,6 +59,12 @@ namespace API.Hubs
             };
 
             await Clients.All.SendAsync("OrderStatusUpdated", orderDTO);
+        }
+
+        public async Task GetAllFoodDrink(GetAllFoodDrinkQuery query)
+        {
+            var foodDrinks = await _mediator.Send(query);
+            await Clients.Caller.SendAsync("AllOrders", foodDrinks);
         }
     }
 }

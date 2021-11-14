@@ -24,42 +24,37 @@ import {
 import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 
 import AddedOrderItem from "./added_order_item";
-import { Order, OrderStatus } from "../waiter_page";
+import { OrderStatus } from "../../../models/order_status";
+import { Order } from "../../../models/order";
+import { FoodDrink } from "../../../models/food_drink";
 
 export interface AddOrderProps {
   tableNum: number;
   addNewOrders: (order: Order) => void;
 }
 
-export interface FoodDrink {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-}
-
 const availableMenus = [
   {
     id: 1,
-    title: "Valami leves",
+    name: "Valami leves",
     price: 10,
     quantity: 0,
   },
   {
     id: 2,
-    title: "Főzelék tes",
+    name: "Főzelék tes",
     price: 21,
     quantity: 0,
   },
   {
     id: 3,
-    title: "Tésztaaaa is van",
+    name: "Tésztaaaa is van",
     price: 32,
     quantity: 0,
   },
   {
     id: 4,
-    title: "Csirke=chicken",
+    name: "Csirke=chicken",
     price: 43,
     quantity: 0,
   },
@@ -98,7 +93,7 @@ const AddOrderCard = (props: AddOrderProps) => {
     let text = event.target.value;
     setSortedMenus(
       sortedMenus.filter((item) =>
-        item.title.toLowerCase().includes(text.toLowerCase())
+        item.name.toLowerCase().includes(text.toLowerCase())
       )
     );
 
@@ -118,7 +113,7 @@ const AddOrderCard = (props: AddOrderProps) => {
       props.addNewOrders({
         id: item.id,
         table: props.tableNum,
-        name: item.title,
+        name: item.name,
         price: item.price,
         orderStatus: OrderStatus.InProgress,
       });
@@ -141,7 +136,7 @@ const AddOrderCard = (props: AddOrderProps) => {
             <Wrap>
               {selectedItems.map((item) => (
                 <AddedOrderItem
-                  title={item.title}
+                  title={item.name}
                   id={item.id}
                   onClose={handleOrderRemove}
                 />
@@ -177,7 +172,7 @@ const AddOrderCard = (props: AddOrderProps) => {
                     alignItems="center"
                     justifyContent="space-between"
                   >
-                    <Text>{item.title}</Text>
+                    <Text>{item.name}</Text>
                     <Box zIndex={1}>
                       <IconButton
                         position="relative"

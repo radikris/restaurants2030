@@ -3,8 +3,8 @@ import { Box, Center, Grid, GridItem, VStack } from "@chakra-ui/layout";
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import SelectPaymentOption from "./select_payment_option";
-import { Order } from "../waiter_page";
 import TableBillList from "./table_bill_list";
+import { Order } from "../../../models/order";
 
 export interface IProps {
   table: Order[];

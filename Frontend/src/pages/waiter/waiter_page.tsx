@@ -11,25 +11,14 @@ import {
   HubConnectionBuilder,
   LogLevel,
 } from "@microsoft/signalr";
+import { OrderStatus } from "../../models/order_status";
+import { Order } from "../../models/order";
+import { FoodDrink } from "../../models/food_drink";
 
 export enum ActionTypes {
   INITIAL = "Initial",
   ORDER_STATUS_CHANGED = "OrderStatusChanged",
   ADD_ORDER = "AddOrder",
-}
-
-export enum OrderStatus {
-  InProgress = 0,
-  Ready = 1,
-  Served = 2,
-}
-
-export interface Order {
-  id: number;
-  table: number;
-  name: string;
-  price: number;
-  orderStatus: OrderStatus;
 }
 
 export type OrderAction = {
@@ -39,6 +28,10 @@ export type OrderAction = {
 };
 
 export default function WaiterPage() {
+  const [restaurantFoodDrinks, setRestaurantFoodDrinks] = useState<FoodDrink[]>(
+    []
+  );
+
   const [tableOrdersRemastered, tableOrdersRemasteredDispatch] = useReducer(
     produce((draft: Map<number, Order[]>, action: OrderAction) => {
       switch (action.type) {
@@ -94,6 +87,10 @@ export default function WaiterPage() {
     });
   }, []);
 
+  const handleAllFoodDrink = useCallback((allFoodDrinks: FoodDrink[]) => {
+    setRestaurantFoodDrinks(allFoodDrinks);
+  }, []);
+
   const handleAddOrder = useCallback((order: Order) => {
     tableOrdersRemasteredDispatch({
       type: ActionTypes.ADD_ORDER,
@@ -131,8 +128,13 @@ export default function WaiterPage() {
           connection.on("AllOrders", (orders: Order[]) => {
             handleInitial(orders);
           });
+
           connection.on("OrderStatusUpdated", (order: Order) => {
             handleChangeStatus(order);
+          });
+
+          connection.on("AllFoodDrinks", (foodDrinks: FoodDrink[]) => {
+            handleAllFoodDrink(foodDrinks);
           });
 
           connection.invoke("GetAllOrders", { RestaurantId: 1 });
@@ -182,8 +184,9 @@ export default function WaiterPage() {
           {Array.from(tableOrdersRemastered).map((orders) => (
             <TableCard
               key={orders[0]}
-              table={orders[1]}
+              table={orders[1]} //TODO typo???
               tableNumber={orders[0]}
+              foodDrinks={restaurantFoodDrinks}
               addOrder={handleAddOrder}
               changeStatus={handleChangeStatusInvoke}
             />

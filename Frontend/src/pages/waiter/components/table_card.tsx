@@ -14,13 +14,16 @@ import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./swipeable_item";
 
 import React from "react";
-import { Order, OrderStatus } from "../waiter_page";
 import AddOrderCard from "./add_order_card";
 import DoneOrderCard from "./done_order_card";
 import TablePayModal from "./table_pay_modal";
+import { OrderStatus } from "../../../models/order_status";
+import { Order } from "../../../models/order";
+import { FoodDrink } from "../../../models/food_drink";
 
 interface Props {
   table: Order[];
+  foodDrinks: FoodDrink[];
   tableNumber: number;
   addOrder: (order: Order) => void;
   changeStatus: (order: Order, status: OrderStatus) => void;
