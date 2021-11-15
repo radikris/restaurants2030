@@ -90,6 +90,7 @@ export default function WaiterPage() {
 
   const handleAllFoodDrink = useCallback((allFoodDrinks: FoodDrink[]) => {
     setRestaurantFoodDrinks(allFoodDrinks);
+    console.log(allFoodDrinks);
   }, []);
 
   const handleAddOrder = useCallback((order: Order) => {
@@ -142,6 +143,8 @@ export default function WaiterPage() {
           connection.invoke("GetAllFoodDrink", { RestaurantId: 1 });
         })
         .catch((error) => console.log(error));
+
+      setConnection(connection);
     }
   }, [connection, handleChangeStatus, handleInitial, handleAllFoodDrink]);
 

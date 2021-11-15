@@ -7,8 +7,6 @@ export interface WaiterContextInterface {
     restaurantId: number;
 }
 
-
-
 const WaiterContext = React.createContext<WaiterContextInterface | null>(null);
 
 export default WaiterContext;

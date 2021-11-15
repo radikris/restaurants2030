@@ -74,7 +74,7 @@ namespace API.Hubs
                 Quantity=0,
     
             }));
-            await Clients.Caller.SendAsync("AllFoodDrinksHandler", foodDrinks);
+            await Clients.Caller.SendAsync("AllFoodDrinksHandler", list);
         }
 
         public async Task AddNewOrders(AddNewOrdersQuery query)
@@ -84,6 +84,11 @@ namespace API.Hubs
 
             foreach (var order in newOrdersList)
             {
+                Console.WriteLine(order.Id);
+                Console.WriteLine(order.FoodDrink.Name);
+                Console.WriteLine(order.FoodDrink.Price);
+                Console.WriteLine(order.Table);
+                Console.WriteLine(order.OrderStatusId);
                 OrderDTO orderDTO = new OrderDTO
                 {
                     Id = order.Id,
