@@ -5,8 +5,21 @@ import KitchenPage from "../../pages/kitchen/kitchen_page";
 import WaiterPage from "../../pages/waiter/waiter_page";
 import Layout from "./Layout";
 import { Routes } from "../../util/constants";
+import WaiterContext, {
+  WaiterContextInterface,
+} from "../../store/waiter_context";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 function CommonNavigator() {
+  const waiterContext: WaiterContextInterface = {
+    restaurantId: 1,
+    connection: new HubConnectionBuilder()
+      .withUrl("http://localhost:5000/restauranthub")
+      .withAutomaticReconnect()
+      .configureLogging(LogLevel.Debug)
+      .build(),
+  };
+
   return (
     <Layout>
       <Switch>
@@ -23,7 +36,9 @@ function CommonNavigator() {
           <KitchenPage />
         </Route>
         <Route path={Routes.WAITER}>
-          <WaiterPage />
+          <WaiterContext.Provider value={waiterContext}>
+            <WaiterPage />
+          </WaiterContext.Provider>
         </Route>
         <Route path="*">
           <div>NOTHING TO SEE HERE PAGE</div>

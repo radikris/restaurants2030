@@ -74,7 +74,30 @@ namespace API.Hubs
                 Quantity=0,
     
             }));
-            await Clients.Caller.SendAsync("AllFoodDrinks", foodDrinks);
+            await Clients.Caller.SendAsync("AllFoodDrinksHandler", foodDrinks);
+        }
+
+        public async Task AddNewOrders(AddNewOrdersQuery query)
+        {
+            var newOrdersList = await _mediator.Send(query);
+            var list = new List<OrderDTO>();
+
+            foreach (var order in newOrdersList)
+            {
+                OrderDTO orderDTO = new OrderDTO
+                {
+                    Id = order.Id,
+                    Name = order.FoodDrink.Name,
+                    Price = order.FoodDrink.Price,
+                    Table = order.Table,
+                    OrderStatus = order.OrderStatusId
+                };
+
+                list.Add(orderDTO);
+            }
+
+            await Clients.All.SendAsync("AddNewOrdersHandler", list);
+
         }
     }
 }

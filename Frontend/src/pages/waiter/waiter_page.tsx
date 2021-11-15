@@ -14,6 +14,7 @@ import {
 import { OrderStatus } from "../../models/order_status";
 import { Order } from "../../models/order";
 import { FoodDrink } from "../../models/food_drink";
+import WaiterContext from "../../store/waiter_context";
 
 export enum ActionTypes {
   INITIAL = "Initial",
@@ -100,14 +101,14 @@ export default function WaiterPage() {
 
   const [connection, setConnection] = useState<null | HubConnection>(null);
 
-  useEffect(() => {
-    const connect = new HubConnectionBuilder()
-      .withUrl("http://localhost:5000/restauranthub")
-      .withAutomaticReconnect()
-      .configureLogging(LogLevel.Debug)
-      .build();
+  //TODO ADD RESTAURANTID AND CONNECTIONS TO CONTEXT PROVIDER
 
-    setConnection(connect);
+  const waiterContext = React.useContext(WaiterContext);
+
+  useEffect(() => {
+    if (waiterContext?.connection) {
+      setConnection(waiterContext?.connection!);
+    }
   }, []);
 
   const handleChangeStatusInvoke = useCallback(
@@ -133,7 +134,7 @@ export default function WaiterPage() {
             handleChangeStatus(order);
           });
 
-          connection.on("AllFoodDrinks", (foodDrinks: FoodDrink[]) => {
+          connection.on("AllFoodDrinksHandler", (foodDrinks: FoodDrink[]) => {
             handleAllFoodDrink(foodDrinks);
           });
 
@@ -154,7 +155,6 @@ export default function WaiterPage() {
       a.table > b.table ? retValue : -1 * retValue
     );
 
-    console.log(isDescending);
     setIsDescending(!isDescending);
     setAllPendingOrders(sortedList);
   };

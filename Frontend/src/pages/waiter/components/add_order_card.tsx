@@ -27,6 +27,7 @@ import AddedOrderItem from "./added_order_item";
 import { OrderStatus } from "../../../models/order_status";
 import { Order } from "../../../models/order";
 import { FoodDrink } from "../../../models/food_drink";
+import WaiterContext from "../../../store/waiter_context";
 
 export interface AddOrderProps {
   tableNum: number;
@@ -37,14 +38,44 @@ export interface AddOrderProps {
 var availableMenus: FoodDrink[] = [];
 
 const AddOrderCard = (props: AddOrderProps) => {
+  const waiterContext = React.useContext(WaiterContext);
+
   const [selectedItems, setSelectedItems] = React.useState<FoodDrink[]>([]);
+  const [addedNewOrders, setAddedNewOrders] = React.useState<Order[]>([]);
 
   const [sortedMenus, setSortedMenus] = React.useState<FoodDrink[]>([]);
+
+  const handleAddNewOrders = (orders: Order[]) => {
+    setAddedNewOrders(orders);
+    console.log("visszajott a letrehozott");
+    console.log(orders);
+
+    orders.forEach((item) => {
+      props.addNewOrders({
+        id: item.id,
+        table: props.tableNum,
+        name: item.name,
+        price: item.price,
+        orderStatus: OrderStatus.InProgress,
+      });
+    });
+
+    setSelectedItems([]);
+  };
 
   useEffect(() => {
     availableMenus = props.foodDrinks;
     setSortedMenus(props.foodDrinks);
-  }, [props.foodDrinks]);
+
+    if (waiterContext?.connection) {
+      waiterContext!.connection?.on(
+        "AddNewOrdersHandler",
+        (orders: Order[]) => {
+          handleAddNewOrders(orders);
+        }
+      );
+    }
+  }, [props.foodDrinks, waiterContext?.connection, handleAddNewOrders]);
 
   const changeOrderQuantity = (id: number, change: number) => {
     let findAddedItem = sortedMenus.findIndex((menu) => menu.id === id);
@@ -90,17 +121,20 @@ const AddOrderCard = (props: AddOrderProps) => {
   };
 
   const handleOrderAdd = () => {
-    selectedItems.forEach((item) => {
-      props.addNewOrders({
-        id: item.id,
-        table: props.tableNum,
-        name: item.name,
-        price: item.price,
-        orderStatus: OrderStatus.InProgress,
-      });
-    });
+    //ITT KELLENE SZÓLNI SINGNALR AddNewOrders, és selectedItems helyett azon végigmenni
 
-    setSelectedItems([]);
+    //connectiont meg a restaurantid-t megkapni contextből, és a tablenumot átadni még a paraméternek
+    //      elején useeffecetben feliratkoztatni:
+    //      connection.on("AddNewOrdersHandler", (orders: Order[]) => {
+    //          handleAddNewOrders(orders);
+    //      });
+    //         connection.invoke("AddNewOrders", { RestaurantId: 1, TableNum: props.tableNum, NewOrders: selectedItems});
+
+    waiterContext?.connection?.invoke("AddNewOrders", {
+      RestaurantId: 1,
+      TableNum: props.tableNum,
+      NewOrders: selectedItems,
+    });
   };
 
   return (
