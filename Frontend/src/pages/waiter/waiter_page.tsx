@@ -6,11 +6,7 @@ import DoneOrderCard from "./components/done_order_card";
 import { FaAngleDown, FaAngleUp, FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./components/swipeable_item";
 import produce from "immer";
-import {
-  HubConnection,
-  HubConnectionBuilder,
-  LogLevel,
-} from "@microsoft/signalr";
+import { HubConnection } from "@microsoft/signalr";
 import { OrderStatus } from "../../models/order_status";
 import { Order } from "../../models/order";
 import { FoodDrink } from "../../models/food_drink";
@@ -100,9 +96,19 @@ export default function WaiterPage() {
     });
   }, []);
 
-  const [connection, setConnection] = useState<null | HubConnection>(null);
+  const handleAddNewOrders = useCallback(
+    (orders: Order[]) => {
+      console.log("visszajott a letrehozott");
+      console.log(orders);
 
-  //TODO ADD RESTAURANTID AND CONNECTIONS TO CONTEXT PROVIDER
+      orders.forEach((item) => {
+        handleAddOrder(item);
+      });
+    },
+    [handleAddOrder]
+  );
+
+  const [connection, setConnection] = useState<null | HubConnection>(null);
 
   const waiterContext = React.useContext(WaiterContext);
 
@@ -110,7 +116,7 @@ export default function WaiterPage() {
     if (waiterContext?.connection) {
       setConnection(waiterContext?.connection!);
     }
-  }, []);
+  }, [waiterContext?.connection]);
 
   const handleChangeStatusInvoke = useCallback(
     (order: Order, status: OrderStatus) => {
@@ -139,6 +145,10 @@ export default function WaiterPage() {
             handleAllFoodDrink(foodDrinks);
           });
 
+          connection.on("AddNewOrdersHandler", (orders: Order[]) => {
+            handleAddNewOrders(orders);
+          });
+
           connection.invoke("GetAllOrders", { RestaurantId: 1 });
           connection.invoke("GetAllFoodDrink", { RestaurantId: 1 });
         })
@@ -146,7 +156,13 @@ export default function WaiterPage() {
 
       setConnection(connection);
     }
-  }, [connection, handleChangeStatus, handleInitial, handleAllFoodDrink]);
+  }, [
+    connection,
+    handleChangeStatus,
+    handleInitial,
+    handleAllFoodDrink,
+    handleAddNewOrders,
+  ]);
 
   const [allPendingOrder, setAllPendingOrders] = useState<Order[]>([]);
   const [isDescending, setIsDescending] = useState<boolean>(true);
@@ -188,7 +204,7 @@ export default function WaiterPage() {
           {Array.from(tableOrdersRemastered).map((orders) => (
             <TableCard
               key={orders[0]}
-              table={orders[1]} //TODO typo???
+              table={orders[1]}
               tableNumber={orders[0]}
               foodDrinks={restaurantFoodDrinks}
               addOrder={handleAddOrder}

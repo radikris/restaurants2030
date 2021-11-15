@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useCallback } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import {
   Box,
@@ -24,7 +24,6 @@ import {
 import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 
 import AddedOrderItem from "./added_order_item";
-import { OrderStatus } from "../../../models/order_status";
 import { Order } from "../../../models/order";
 import { FoodDrink } from "../../../models/food_drink";
 import WaiterContext from "../../../store/waiter_context";
@@ -39,48 +38,15 @@ var availableMenus: FoodDrink[] = [];
 
 const AddOrderCard = (props: AddOrderProps) => {
   const waiterContext = React.useContext(WaiterContext);
-  const [addedNewOrders, setAddedNewOrders] = React.useState<Order[]>([]);
 
   const [selectedItems, setSelectedItems] = React.useState<FoodDrink[]>([]);
 
   const [sortedMenus, setSortedMenus] = React.useState<FoodDrink[]>([]);
 
-  const handleAddNewOrders = useCallback(
-    (orders: Order[]) => {
-      setAddedNewOrders(orders);
-      console.log("visszajott a letrehozott");
-      console.log(orders);
-
-      orders.forEach((item) => {
-        props.addNewOrders({
-          id: item.id,
-          table: props.tableNum,
-          name: item.name,
-          price: item.price,
-          orderStatus: OrderStatus.InProgress,
-        });
-      });
-
-      setSelectedItems([]);
-    },
-    [props]
-  );
-
   useEffect(() => {
     availableMenus = props.foodDrinks;
     setSortedMenus(props.foodDrinks);
   }, [props.foodDrinks]);
-
-  useEffect(() => {
-    if (waiterContext?.connection) {
-      waiterContext!.connection?.on(
-        "AddNewOrdersHandler",
-        (orders: Order[]) => {
-          handleAddNewOrders(orders);
-        }
-      );
-    }
-  }, []);
 
   const changeOrderQuantity = (id: number, change: number) => {
     let findAddedItem = sortedMenus.findIndex((menu) => menu.id === id);
@@ -142,6 +108,7 @@ const AddOrderCard = (props: AddOrderProps) => {
       TableNum: props.tableNum,
       NewOrders: sortedMenus,
     });
+    clearOrders();
   };
 
   return (

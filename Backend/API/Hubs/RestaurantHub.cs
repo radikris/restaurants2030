@@ -21,6 +21,7 @@ namespace API.Hubs
 
         public override async Task OnConnectedAsync()
         {
+            Console.WriteLine("+1");
             await base.OnConnectedAsync();
         }
 
