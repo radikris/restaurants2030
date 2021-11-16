@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.CQRS.Commands;
 using API.CQRS.Queries;
 using API.DTO;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace API.Hubs
 {
+    [Authorize]
     public class RestaurantHub : Hub
     {
         private readonly IMediator _mediator;
@@ -28,9 +31,11 @@ namespace API.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task GetAllOrders(GetAllOrderQuery query)
+        public async Task GetAllOrders()
         {
-            var orders = await _mediator.Send(query);
+            var orders = await _mediator.Send(new GetAllOrderQuery{ 
+                RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value)
+            });
             var list = new List<OrderDTO>();
             orders.ForEach(order => list.Add(new 
                 OrderDTO

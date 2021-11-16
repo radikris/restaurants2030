@@ -14,6 +14,7 @@ import { FaAngleDown, FaAngleUp, FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./components/swipeable_item";
 import produce from "immer";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { getToken } from "../../util/agent";
 
 export enum ActionTypes {
   INITIAL = "Initial",
@@ -95,7 +96,7 @@ export default function WaiterPage() {
 
   useEffect(() => {
     const connect = new HubConnectionBuilder()
-      .withUrl("http://localhost:5000/restauranthub")
+      .withUrl("http://localhost:5000/restauranthub", { accessTokenFactory: () => getToken()!.toString() })
       .withAutomaticReconnect()
       .configureLogging(LogLevel.Debug)
       .build();
@@ -117,7 +118,7 @@ export default function WaiterPage() {
           handleChangeStatus(order);
         });
 
-        connection.invoke("GetAllOrders", { RestaurantId: 1 });
+        connection.invoke("GetAllOrders");
       }).catch((error) => console.log(error));
     }
   }, [connection, handleChangeStatus, handleInitial]);

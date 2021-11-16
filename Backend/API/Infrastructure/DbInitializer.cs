@@ -1,11 +1,13 @@
 using System.Linq;
+using System.Threading.Tasks;
 using API.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Infrastructure
 {
     public static class DbInitializer
     {
-        public static void Initialize(ApplicationDbContext context)
+        public static async Task Initialize(ApplicationDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             context.Database.EnsureCreated();
 
@@ -45,6 +47,23 @@ namespace API.Infrastructure
             foreach (var order in orders)
                 context.Orders.Add(order);
             context.SaveChanges();
+
+            var roles = new string[]
+            {
+                "Admin", "Waiter", "Chef", "Management"
+            };
+            foreach (var role in roles)
+                await roleManager.CreateAsync(new IdentityRole(role));
+
+                var users = new AppUser[]
+                {
+                    new AppUser{ RestaurantId = 1, Email = "admin@dev.com", UserName = "adminuser" },
+                };
+                foreach (var user in users)
+                {
+                    await userManager.CreateAsync(user, "adminpass");
+                    await userManager.AddToRoleAsync(user, "Admin");
+                }
         }
     }
 }

@@ -7,6 +7,7 @@ import LoginPage from "../../pages/login/login_page";
 import RegistrationPage from "../../pages/registration/registration_page";
 import Layout from "./Layout";
 import { Routes } from "../../util/constants";
+import { getToken } from "../../util/agent";
 
 function CommonNavigator() {
   return (
@@ -18,15 +19,9 @@ function CommonNavigator() {
         <Route path={Routes.RESTAURANT} exact>
           <RestaurantPage />
         </Route>
-        <Route path={Routes.MANAGEMENT}>
-          <ManagementPage />
-        </Route>
-        <Route path={Routes.KITCHEN}>
-          <KitchenPage />
-        </Route>
-        <Route path={Routes.WAITER}>
-          <WaiterPage />
-        </Route>
+        <Route path={Routes.MANAGEMENT} render={(props) => getToken() !== null ? <ManagementPage /> : <Redirect to="/login" />} />
+        <Route path={Routes.KITCHEN} render={(props) => getToken() !== null ? <KitchenPage /> : <Redirect to="/login" />} />
+        <Route path={Routes.WAITER} render={(props) => getToken() !== null ? <WaiterPage /> : <Redirect to="/login" />} />
         <Route path={Routes.LOGIN}>
           <LoginPage />
         </Route>

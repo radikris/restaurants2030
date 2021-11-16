@@ -1,3 +1,4 @@
+using API.Extensions;
 using API.Hubs;
 using API.Infrastructure;
 using MediatR;
@@ -34,6 +35,10 @@ namespace API
             services.AddSignalR();
 
             services.AddMediatR(typeof(Startup).Assembly);
+
+            services.AddIdentityService(_configuration);
+
+            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -47,8 +52,12 @@ namespace API
 
             app.UseCors("CorsPolicy");
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapHub<RestaurantHub>("/restauranthub");
             });
         }
