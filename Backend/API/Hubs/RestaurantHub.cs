@@ -34,15 +34,15 @@ namespace API.Hubs
         {
             var orders = await _mediator.Send(query);
             var list = new List<OrderDTO>();
-            orders.ForEach(order => list.Add(new 
+            orders.ForEach(order => list.Add(new
                 OrderDTO
-                {
-                    Id = order.Id, 
-                    Name = order.FoodDrink.Name, 
-                    Price = order.FoodDrink.Price, 
-                    Table = order.Table, 
-                    OrderStatus = order.OrderStatusId
-                }));
+            {
+                Id = order.Id,
+                Name = order.FoodDrink.Name,
+                Price = order.FoodDrink.Price,
+                Table = order.Table,
+                OrderStatus = order.OrderStatusId
+            }));
 
             await Clients.Caller.SendAsync("AllOrders", list);
         }
@@ -52,10 +52,10 @@ namespace API.Hubs
             var order = await _mediator.Send(orderStatusCommand);
             OrderDTO orderDTO = new OrderDTO
             {
-                Id = order.Id, 
-                Name = order.FoodDrink.Name, 
-                Price = order.FoodDrink.Price, 
-                Table = order.Table, 
+                Id = order.Id,
+                Name = order.FoodDrink.Name,
+                Price = order.FoodDrink.Price,
+                Table = order.Table,
                 OrderStatus = order.OrderStatusId
             };
 
@@ -72,8 +72,8 @@ namespace API.Hubs
                 Id = foodDrink.Id,
                 Name = foodDrink.Name,
                 Price = foodDrink.Price,
-                Quantity=0,
-    
+                Quantity = 0,
+
             }));
             await Clients.Caller.SendAsync("AllFoodDrinksHandler", list);
         }
@@ -104,6 +104,13 @@ namespace API.Hubs
 
             await Clients.All.SendAsync("AddNewOrdersHandler", list);
 
+        }
+
+        public async Task AddNewFoodDrink(AddNewFoodDrinkQuery query)
+        {
+            var newFoodDrink = await _mediator.Send(query);
+            System.Console.WriteLine(newFoodDrink.Id);
+            await Clients.Caller.SendAsync("AddNewFoodDrinkHandler", newFoodDrink);
         }
     }
 }

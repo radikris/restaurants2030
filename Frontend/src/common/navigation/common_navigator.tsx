@@ -9,9 +9,21 @@ import WaiterContext, {
   WaiterContextInterface,
 } from "../../store/waiter_context";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import ManagementContext, {
+  ManagementContextInterface,
+} from "../../store/management_context";
 
 function CommonNavigator() {
   const waiterContext: WaiterContextInterface = {
+    restaurantId: 1,
+    connection: new HubConnectionBuilder()
+      .withUrl("http://localhost:5000/restauranthub")
+      .withAutomaticReconnect()
+      .configureLogging(LogLevel.Debug)
+      .build(),
+  };
+
+  const managementContext: ManagementContextInterface = {
     restaurantId: 1,
     connection: new HubConnectionBuilder()
       .withUrl("http://localhost:5000/restauranthub")
@@ -30,7 +42,9 @@ function CommonNavigator() {
           <RestaurantPage />
         </Route>
         <Route path={Routes.MANAGEMENT}>
-          <ManagementPage />
+          <ManagementContext.Provider value={managementContext}>
+            <ManagementPage />
+          </ManagementContext.Provider>
         </Route>
         <Route path={Routes.KITCHEN}>
           <KitchenPage />
