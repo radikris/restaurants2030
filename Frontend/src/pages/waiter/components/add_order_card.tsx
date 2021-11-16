@@ -124,6 +124,7 @@ const AddOrderCard = (props: AddOrderProps) => {
             <Wrap>
               {selectedItems.map((item) => (
                 <AddedOrderItem
+                  key={item.id}
                   title={item.name}
                   id={item.id}
                   onClose={handleOrderRemove}
@@ -155,6 +156,7 @@ const AddOrderCard = (props: AddOrderProps) => {
                 </Button>
                 {sortedMenus.map((item) => (
                   <Box
+                    key={item.id}
                     w={"full"}
                     display="flex"
                     alignItems="center"

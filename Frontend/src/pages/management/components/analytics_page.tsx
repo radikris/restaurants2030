@@ -5,10 +5,9 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Text,
   Center,
 } from "@chakra-ui/react";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 
 import { useForm } from "react-hook-form";
 import {
@@ -21,7 +20,7 @@ import {
 
 import { FoodDrink } from "../../../models/food_drink";
 import ApiContext from "../../../store/api_context";
-import { HubConnection } from "@microsoft/signalr";
+import { HubConnectionState } from "@microsoft/signalr";
 
 interface IFormFoodDrink {
   name: string;
@@ -29,8 +28,6 @@ interface IFormFoodDrink {
 }
 
 export default function AnalyticsPage() {
-  const [connection, setConnection] = useState<null | HubConnection>(null);
-
   const apiContext = React.useContext(ApiContext);
   const {
     register,
@@ -38,10 +35,16 @@ export default function AnalyticsPage() {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  useEffect(() => {
+    if (apiContext?.connection) {
+      if (apiContext?.connection.state !== HubConnectionState.Connected) {
+        apiContext?.connection.start();
+      }
+    }
+  }, [apiContext?.connection]);
+
   function onSubmit(data: IFormFoodDrink) {
     return new Promise((resolve) => {
-      //TODO
-      //CALL SINGLAR
       const fd = {
         name: data["name"],
         price: +value,
@@ -49,7 +52,7 @@ export default function AnalyticsPage() {
 
       console.log(fd);
       resolve(
-        connection?.invoke("AddNewFoodDrink", {
+        apiContext?.connection?.invoke("AddNewFoodDrink", {
           NewFoodDrink: fd,
         })
       );
@@ -67,24 +70,11 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     if (apiContext?.connection) {
-      setConnection(apiContext?.connection!);
+      apiContext?.connection.on("AddNewFoodDrinkHandler", (foodDrink: FoodDrink) => {
+        handleNewFoodDrink(foodDrink);
+      });
     }
-  }, [apiContext?.connection]);
-
-  useEffect(() => {
-    if (connection) {
-      connection
-        .start()
-        .then(() => {
-          connection.on("AddNewFoodDrinkHandler", (foodDrink: FoodDrink) => {
-            handleNewFoodDrink(foodDrink);
-          });
-        })
-        .catch((error) => console.log(error));
-
-      setConnection(connection);
-    }
-  }, [connection, handleNewFoodDrink]);
+  }, [apiContext, handleNewFoodDrink]);
 
   return (
     <Center>

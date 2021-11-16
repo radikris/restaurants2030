@@ -32,7 +32,7 @@ namespace API.CQRS.Queries
                 FoodDrink createdFoodDrink = new FoodDrink { Name = request.NewFoodDrink.Name, Price = request.NewFoodDrink.Price, RestaurantId = request.RestaurantId };
                 _context.FoodsDrinks.Add(createdFoodDrink);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return createdFoodDrink;
             }
         }

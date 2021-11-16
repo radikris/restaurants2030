@@ -23,8 +23,6 @@ function CommonNavigator() {
       .build(),
   };
 
-  //TODO start hub here?
-
   return (
     <ApiContext.Provider value={apiContext}>
       <Layout>

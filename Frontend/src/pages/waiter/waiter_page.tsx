@@ -11,11 +11,8 @@ import { Order } from "../../models/order";
 import { FoodDrink } from "../../models/food_drink";
 import ApiContext from "../../store/api_context";
 import {
-  HubConnection,
-  HubConnectionBuilder,
-  LogLevel,
+  HubConnectionState,
 } from "@microsoft/signalr";
-import { getToken } from "../../util/agent";
 
 export enum ActionTypes {
   INITIAL = "Initial",
@@ -113,56 +110,57 @@ export default function WaiterPage() {
     [handleAddOrder]
   );
 
-  const [connection, setConnection] = useState<null | HubConnection>(null);
+  //const [connection, setConnection] = useState<null | HubConnection>(null);
 
   const apiContext = React.useContext(ApiContext);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (apiContext?.connection) {
       setConnection(apiContext?.connection!);
     }
-  }, [apiContext?.connection]);
+  }, [apiContext?.connection]);*/
 
   const handleChangeStatusInvoke = useCallback(
     (order: Order, status: OrderStatus) => {
-      connection?.invoke("UpdateOrderStatus", {
+      apiContext?.connection?.invoke("UpdateOrderStatus", {
         Id: order.id,
         OrderStatus: status,
       });
     },
-    [connection]
+    [apiContext]
   );
 
   useEffect(() => {
-    if (connection) {
-      connection
-        .start()
-        .then(() => {
-          connection.on("AllOrders", (orders: Order[]) => {
-            handleInitial(orders);
-          });
+    if (apiContext?.connection) {
+      if (apiContext?.connection.state !== HubConnectionState.Connected)
+        apiContext?.connection.start().then(() => {
+          apiContext?.connection?.invoke("GetAllOrders");
+          apiContext?.connection?.invoke("GetAllFoodDrink");
+        });
+      
+      apiContext?.connection.on("AllOrders", (orders: Order[]) => {
+        handleInitial(orders);
+      });
 
-          connection.on("OrderStatusUpdated", (order: Order) => {
-            handleChangeStatus(order);
-          });
+      apiContext?.connection.on("OrderStatusUpdated", (order: Order) => {
+        handleChangeStatus(order);
+      });
 
-          connection.on("AllFoodDrinksHandler", (foodDrinks: FoodDrink[]) => {
-            handleAllFoodDrink(foodDrinks);
-          });
+      apiContext?.connection.on("AllFoodDrinksHandler", (foodDrinks: FoodDrink[]) => {
+        handleAllFoodDrink(foodDrinks);
+      });
 
-          connection.on("AddNewOrdersHandler", (orders: Order[]) => {
-            handleAddNewOrders(orders);
-          });
+      apiContext?.connection.on("AddNewOrdersHandler", (orders: Order[]) => {
+        handleAddNewOrders(orders);
+      });
 
-          connection.invoke("GetAllOrders");
-          connection.invoke("GetAllFoodDrink");
-        })
-        .catch((error) => console.log(error));
-
-      //setConnection(connection);
+      if (apiContext?.connection.state === HubConnectionState.Connected) {
+        apiContext?.connection.invoke("GetAllOrders");
+        apiContext?.connection.invoke("GetAllFoodDrink");
+      }
     }
   }, [
-    connection,
+    apiContext?.connection,
     handleChangeStatus,
     handleInitial,
     handleAllFoodDrink,
