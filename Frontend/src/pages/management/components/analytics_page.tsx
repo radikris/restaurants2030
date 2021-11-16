@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 
 import { FoodDrink } from "../../../models/food_drink";
-import ManagementContext from "../../../store/management_context";
+import ApiContext from "../../../store/api_context";
 import { HubConnection } from "@microsoft/signalr";
 
 interface IFormFoodDrink {
@@ -31,7 +31,7 @@ interface IFormFoodDrink {
 export default function AnalyticsPage() {
   const [connection, setConnection] = useState<null | HubConnection>(null);
 
-  const managementContext = React.useContext(ManagementContext);
+  const apiContext = React.useContext(ApiContext);
   const {
     register,
     handleSubmit,
@@ -44,11 +44,12 @@ export default function AnalyticsPage() {
       //CALL SINGLAR
       const fd = {
         name: data["name"],
-        price: data["price"],
+        price: +value,
       };
+
+      console.log(fd);
       resolve(
         connection?.invoke("AddNewFoodDrink", {
-          RestaurantId: 1,
           NewFoodDrink: fd,
         })
       );
@@ -65,10 +66,10 @@ export default function AnalyticsPage() {
   }, []);
 
   useEffect(() => {
-    if (managementContext?.connection) {
-      setConnection(managementContext?.connection!);
+    if (apiContext?.connection) {
+      setConnection(apiContext?.connection!);
     }
-  }, [managementContext?.connection]);
+  }, [apiContext?.connection]);
 
   useEffect(() => {
     if (connection) {
@@ -115,6 +116,9 @@ export default function AnalyticsPage() {
             />
             <NumberInput
               id="price"
+              {...register("price", {
+                required: "This is required",
+              })}
               onChange={(valueString) => setValue(parse(valueString))}
               value={format(value)}
               max={50}

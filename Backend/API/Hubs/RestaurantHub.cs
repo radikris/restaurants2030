@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.CQRS.Commands;
 using API.CQRS.Queries;
 using API.DTO;
 using API.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace API.Hubs
 {
+    [Authorize]
     public class RestaurantHub : Hub
     {
         private readonly IMediator _mediator;
@@ -30,9 +33,12 @@ namespace API.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task GetAllOrders(GetAllOrderQuery query)
+        public async Task GetAllOrders()
         {
-            var orders = await _mediator.Send(query);
+            var orders = await _mediator.Send(new GetAllOrderQuery
+            {
+                RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value)
+            });
             var list = new List<OrderDTO>();
             orders.ForEach(order => list.Add(new
                 OrderDTO
@@ -62,9 +68,12 @@ namespace API.Hubs
             await Clients.All.SendAsync("OrderStatusUpdated", orderDTO);
         }
 
-        public async Task GetAllFoodDrink(GetAllFoodDrinkQuery query)
+        public async Task GetAllFoodDrink()
         {
-            var foodDrinks = await _mediator.Send(query);
+            var foodDrinks = await _mediator.Send(new GetAllFoodDrinkQuery
+            {
+                RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value)
+            });
             var list = new List<FoodDrinkDTO>();
             foodDrinks.ForEach(foodDrink => list.Add(new
                 FoodDrinkDTO
@@ -80,6 +89,7 @@ namespace API.Hubs
 
         public async Task AddNewOrders(AddNewOrdersQuery query)
         {
+            query.RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value);
             var newOrdersList = await _mediator.Send(query);
             var list = new List<OrderDTO>();
 
@@ -108,6 +118,7 @@ namespace API.Hubs
 
         public async Task AddNewFoodDrink(AddNewFoodDrinkQuery query)
         {
+            query.RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value);
             var newFoodDrink = await _mediator.Send(query);
             System.Console.WriteLine(newFoodDrink.Id);
             await Clients.Caller.SendAsync("AddNewFoodDrinkHandler", newFoodDrink);

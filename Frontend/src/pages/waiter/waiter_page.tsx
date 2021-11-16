@@ -6,11 +6,16 @@ import DoneOrderCard from "./components/done_order_card";
 import { FaAngleDown, FaAngleUp, FaArrowAltCircleUp } from "react-icons/fa";
 import SwipeableItem from "./components/swipeable_item";
 import produce from "immer";
-import { HubConnection } from "@microsoft/signalr";
 import { OrderStatus } from "../../models/order_status";
 import { Order } from "../../models/order";
 import { FoodDrink } from "../../models/food_drink";
-import WaiterContext from "../../store/waiter_context";
+import ApiContext from "../../store/api_context";
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  LogLevel,
+} from "@microsoft/signalr";
+import { getToken } from "../../util/agent";
 
 export enum ActionTypes {
   INITIAL = "Initial",
@@ -110,13 +115,13 @@ export default function WaiterPage() {
 
   const [connection, setConnection] = useState<null | HubConnection>(null);
 
-  const waiterContext = React.useContext(WaiterContext);
+  const apiContext = React.useContext(ApiContext);
 
   useEffect(() => {
-    if (waiterContext?.connection) {
-      setConnection(waiterContext?.connection!);
+    if (apiContext?.connection) {
+      setConnection(apiContext?.connection!);
     }
-  }, [waiterContext?.connection]);
+  }, [apiContext?.connection]);
 
   const handleChangeStatusInvoke = useCallback(
     (order: Order, status: OrderStatus) => {
@@ -149,12 +154,12 @@ export default function WaiterPage() {
             handleAddNewOrders(orders);
           });
 
-          connection.invoke("GetAllOrders", { RestaurantId: 1 });
-          connection.invoke("GetAllFoodDrink", { RestaurantId: 1 });
+          connection.invoke("GetAllOrders");
+          connection.invoke("GetAllFoodDrink");
         })
         .catch((error) => console.log(error));
 
-      setConnection(connection);
+      //setConnection(connection);
     }
   }, [
     connection,

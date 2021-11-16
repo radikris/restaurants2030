@@ -3,62 +3,72 @@ import RestaurantPage from "../../pages/restaurant/restaurant_page";
 import ManagementPage from "../../pages/management/management_page";
 import KitchenPage from "../../pages/kitchen/kitchen_page";
 import WaiterPage from "../../pages/waiter/waiter_page";
+import LoginPage from "../../pages/login/login_page";
+import RegistrationPage from "../../pages/registration/registration_page";
 import Layout from "./Layout";
 import { Routes } from "../../util/constants";
-import WaiterContext, {
-  WaiterContextInterface,
-} from "../../store/waiter_context";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import ManagementContext, {
-  ManagementContextInterface,
-} from "../../store/management_context";
+import ApiContext, { ApiContextInterface } from "../../store/api_context";
+import { getToken } from "../../util/agent";
 
 function CommonNavigator() {
-  const waiterContext: WaiterContextInterface = {
+  const apiContext: ApiContextInterface = {
     restaurantId: 1,
     connection: new HubConnectionBuilder()
-      .withUrl("http://localhost:5000/restauranthub")
+      .withUrl("http://localhost:5000/restauranthub", {
+        accessTokenFactory: () => getToken()!.toString(),
+      })
       .withAutomaticReconnect()
       .configureLogging(LogLevel.Debug)
       .build(),
   };
 
-  const managementContext: ManagementContextInterface = {
-    restaurantId: 1,
-    connection: new HubConnectionBuilder()
-      .withUrl("http://localhost:5000/restauranthub")
-      .withAutomaticReconnect()
-      .configureLogging(LogLevel.Debug)
-      .build(),
-  };
+  //TODO start hub here?
 
   return (
-    <Layout>
-      <Switch>
-        <Route path={Routes.HOME} exact>
-          <Redirect to={Routes.RESTAURANT} />
-        </Route>
-        <Route path={Routes.RESTAURANT} exact>
-          <RestaurantPage />
-        </Route>
-        <Route path={Routes.MANAGEMENT}>
-          <ManagementContext.Provider value={managementContext}>
-            <ManagementPage />
-          </ManagementContext.Provider>
-        </Route>
-        <Route path={Routes.KITCHEN}>
-          <KitchenPage />
-        </Route>
-        <Route path={Routes.WAITER}>
-          <WaiterContext.Provider value={waiterContext}>
-            <WaiterPage />
-          </WaiterContext.Provider>
-        </Route>
-        <Route path="*">
-          <div>NOTHING TO SEE HERE PAGE</div>
-        </Route>
-      </Switch>
-    </Layout>
+    <ApiContext.Provider value={apiContext}>
+      <Layout>
+        <Switch>
+          <Route path={Routes.HOME} exact>
+            <Redirect to={Routes.RESTAURANT} />
+          </Route>
+          <Route path={Routes.RESTAURANT} exact>
+            <RestaurantPage />
+          </Route>
+          <Route
+            path={Routes.MANAGEMENT}
+            render={(props) =>
+              getToken() !== null ? (
+                <ManagementPage />
+              ) : (
+                <Redirect to="/login" />
+              )
+            }
+          />
+          <Route
+            path={Routes.KITCHEN}
+            render={(props) =>
+              getToken() !== null ? <KitchenPage /> : <Redirect to="/login" />
+            }
+          />
+          <Route
+            path={Routes.WAITER}
+            render={(props) =>
+              getToken() !== null ? <WaiterPage /> : <Redirect to="/login" />
+            }
+          />
+          <Route path={Routes.LOGIN}>
+            <LoginPage />
+          </Route>
+          <Route path={Routes.REGISTRATION}>
+            <RegistrationPage />
+          </Route>
+          <Route path="*">
+            <div>NOTHING TO SEE HERE PAGE</div>
+          </Route>
+        </Switch>
+      </Layout>
+    </ApiContext.Provider>
   );
 }
 

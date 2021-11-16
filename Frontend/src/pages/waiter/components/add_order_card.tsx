@@ -26,7 +26,7 @@ import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 import AddedOrderItem from "./added_order_item";
 import { Order } from "../../../models/order";
 import { FoodDrink } from "../../../models/food_drink";
-import WaiterContext from "../../../store/waiter_context";
+import WaiterContext from "../../../store/api_context";
 
 export interface AddOrderProps {
   tableNum: number;
@@ -104,7 +104,6 @@ const AddOrderCard = (props: AddOrderProps) => {
     //console.log(selectedItems);
     console.log(sortedMenus);
     waiterContext?.connection?.invoke("AddNewOrders", {
-      RestaurantId: 1,
       TableNum: props.tableNum,
       NewOrders: sortedMenus,
     });

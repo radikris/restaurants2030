@@ -1,6 +1,9 @@
 using System;
+using System.Threading.Tasks;
 using API.Infrastructure;
+using API.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -9,10 +12,10 @@ namespace API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            CreateDevDbIfNotExists(host);
+            await CreateDevDbIfNotExists(host);
             host.Run();
         }
 
@@ -23,7 +26,7 @@ namespace API
                     webBuilder.UseStartup<Startup>();
                 });
 
-        private static void CreateDevDbIfNotExists(IHost host)
+        private static async Task CreateDevDbIfNotExists(IHost host)
         {
             using (var scope = host.Services.CreateScope())
             {
@@ -31,7 +34,9 @@ namespace API
                 try
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
-                    DbInitializer.Initialize(context);
+                    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    await DbInitializer.Initialize(context, userManager, roleManager);
                 }
                 catch (Exception ex)
                 {
