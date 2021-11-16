@@ -1,10 +1,8 @@
-name: CI
+name: CD
 
 on:
   push:
-    branches: [main, dev, feature/*]
-  pull_request:
-    branches: [main, dev]
+    branches: [main]
 
 jobs:
   build:
@@ -30,11 +28,6 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
       - name: Install dependencies
         run: npm install
         working-directory: Frontend
@@ -42,3 +35,16 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: Frontend
+      
+      - name: Deploy
+        working-directory: Frontend
+        run: |
+          git config --global user.name $user_name
+          git config --global user.email $user_email
+          git remote set-url origin https://${github_token}@github.com/${repository}
+          npm run deploy
+        env:
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
+          repository: ${{ github.repository }}
