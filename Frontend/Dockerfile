@@ -1,9 +1,4 @@
-FROM node:alpine
-
-WORKDIR /app
-
-ENV PATH /app/node_modules/.bin:$PATH
-
+FROM node:16-alpine
 COPY package.json ./
 COPY package-lock.json ./
 
