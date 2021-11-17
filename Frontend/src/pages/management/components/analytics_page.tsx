@@ -70,9 +70,12 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     if (apiContext?.connection) {
-      apiContext?.connection.on("AddNewFoodDrinkHandler", (foodDrink: FoodDrink) => {
-        handleNewFoodDrink(foodDrink);
-      });
+      apiContext?.connection.on(
+        "AddNewFoodDrinkHandler",
+        (foodDrink: FoodDrink) => {
+          handleNewFoodDrink(foodDrink);
+        }
+      );
     }
   }, [apiContext, handleNewFoodDrink]);
 
@@ -95,10 +98,10 @@ export default function AnalyticsPage() {
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl isInvalid={errors.name}>
-            <FormLabel htmlFor="name">First name</FormLabel>
+            <FormLabel htmlFor="name">Please add your new food/drink</FormLabel>
             <Input
               id="name"
-              placeholder="name"
+              placeholder="Food or drink name"
               {...register("name", {
                 required: "This is required",
                 minLength: { value: 4, message: "Minimum length should be 4" },

@@ -16,6 +16,7 @@ export default function TableBillList(props: Props) {
       {props.orders.map((table) => {
         return (
           <Box
+            key={table.id}
             display={"flex"}
             w={"full"}
             justifyContent={"space-between"}
