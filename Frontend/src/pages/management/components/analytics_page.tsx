@@ -114,7 +114,7 @@ export default function AnalyticsPage() {
               })}
               onChange={(valueString) => setValue(parse(valueString))}
               value={format(value)}
-              max={50}
+              min={0}
             >
               <NumberInputField />
               <NumberInputStepper>
