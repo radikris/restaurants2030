@@ -1,14 +1,11 @@
-FROM node:alpine
-
-WORKDIR /app
-
-ENV PATH /app/node_modules/.bin:$PATH
-
+FROM node:16-alpine
 COPY package.json ./
 COPY package-lock.json ./
 
 RUN npm install
 RUN npm install react-scripts
+
+RUN mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
 
 COPY . ./
 

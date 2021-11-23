@@ -9,7 +9,7 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import React from "react";
-import { Order } from "../waiter_page";
+import { Order } from "../../../models/order";
 import TablePayBill from "./table_pay_bill";
 
 export interface IProps {

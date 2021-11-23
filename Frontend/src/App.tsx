@@ -1,18 +1,21 @@
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
+import {createBrowserHistory} from 'history';
 import CommonNavigator from "./common/navigation/common_navigator";
 
 import { enableMapSet } from "immer";
 
 enableMapSet();
 
+export const history = createBrowserHistory();
+
 function App() {
   return (
     <ChakraProvider>
-      <BrowserRouter>
+      <Router history={history}>
         <CommonNavigator />
-      </BrowserRouter>
+      </Router>
     </ChakraProvider>
   );
 }

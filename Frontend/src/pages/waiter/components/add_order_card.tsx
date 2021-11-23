@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import {
   Box,
@@ -24,51 +24,29 @@ import {
 import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 
 import AddedOrderItem from "./added_order_item";
-import { Order, OrderStatus } from "../waiter_page";
+import { Order } from "../../../models/order";
+import { FoodDrink } from "../../../models/food_drink";
+import WaiterContext from "../../../store/api_context";
 
 export interface AddOrderProps {
   tableNum: number;
+  foodDrinks: FoodDrink[];
   addNewOrders: (order: Order) => void;
 }
 
-export interface FoodDrink {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-}
-
-const availableMenus = [
-  {
-    id: 1,
-    title: "Valami leves",
-    price: 10,
-    quantity: 0,
-  },
-  {
-    id: 2,
-    title: "Főzelék tes",
-    price: 21,
-    quantity: 0,
-  },
-  {
-    id: 3,
-    title: "Tésztaaaa is van",
-    price: 32,
-    quantity: 0,
-  },
-  {
-    id: 4,
-    title: "Csirke=chicken",
-    price: 43,
-    quantity: 0,
-  },
-];
+var availableMenus: FoodDrink[] = [];
 
 const AddOrderCard = (props: AddOrderProps) => {
+  const waiterContext = React.useContext(WaiterContext);
+
   const [selectedItems, setSelectedItems] = React.useState<FoodDrink[]>([]);
-  const [sortedMenus, setSortedMenus] =
-    React.useState<FoodDrink[]>(availableMenus);
+
+  const [sortedMenus, setSortedMenus] = React.useState<FoodDrink[]>([]);
+
+  useEffect(() => {
+    availableMenus = props.foodDrinks;
+    setSortedMenus(props.foodDrinks);
+  }, [props.foodDrinks]);
 
   const changeOrderQuantity = (id: number, change: number) => {
     let findAddedItem = sortedMenus.findIndex((menu) => menu.id === id);
@@ -98,7 +76,7 @@ const AddOrderCard = (props: AddOrderProps) => {
     let text = event.target.value;
     setSortedMenus(
       sortedMenus.filter((item) =>
-        item.title.toLowerCase().includes(text.toLowerCase())
+        item.name.toLowerCase().includes(text.toLowerCase())
       )
     );
 
@@ -114,17 +92,22 @@ const AddOrderCard = (props: AddOrderProps) => {
   };
 
   const handleOrderAdd = () => {
-    selectedItems.forEach((item) => {
-      props.addNewOrders({
-        id: item.id,
-        table: props.tableNum,
-        name: item.title,
-        price: item.price,
-        orderStatus: OrderStatus.InProgress,
-      });
-    });
+    //ITT KELLENE SZÓLNI SINGNALR AddNewOrders, és selectedItems helyett azon végigmenni
 
-    setSelectedItems([]);
+    //connectiont meg a restaurantid-t megkapni contextből, és a tablenumot átadni még a paraméternek
+    //      elején useeffecetben feliratkoztatni:
+    //      connection.on("AddNewOrdersHandler", (orders: Order[]) => {
+    //          handleAddNewOrders(orders);
+    //      });
+    //         connection.invoke("AddNewOrders", { RestaurantId: 1, TableNum: props.tableNum, NewOrders: selectedItems});
+
+    //console.log(selectedItems);
+    console.log(sortedMenus);
+    waiterContext?.connection?.invoke("AddNewOrders", {
+      TableNum: props.tableNum,
+      NewOrders: sortedMenus,
+    });
+    clearOrders();
   };
 
   return (
@@ -141,7 +124,8 @@ const AddOrderCard = (props: AddOrderProps) => {
             <Wrap>
               {selectedItems.map((item) => (
                 <AddedOrderItem
-                  title={item.title}
+                  key={item.id}
+                  title={item.name}
                   id={item.id}
                   onClose={handleOrderRemove}
                 />
@@ -172,12 +156,13 @@ const AddOrderCard = (props: AddOrderProps) => {
                 </Button>
                 {sortedMenus.map((item) => (
                   <Box
+                    key={item.id}
                     w={"full"}
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
                   >
-                    <Text>{item.title}</Text>
+                    <Text>{item.name}</Text>
                     <Box zIndex={1}>
                       <IconButton
                         position="relative"

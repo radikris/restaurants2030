@@ -9,7 +9,7 @@ import {
   Type as ListType,
 } from "react-swipeable-list";
 import "react-swipeable-list/dist/styles.css";
-import { Order } from "../waiter_page";
+import { Order } from "../../../models/order";
 
 interface Props {
   children: (orderName: string, tableNum: number) => React.ReactNode;
