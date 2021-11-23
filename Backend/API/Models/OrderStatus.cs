@@ -4,7 +4,8 @@ namespace API.Models
     {
         InProgress = 0,
         Ready = 1,
-        Served = 2
+        Served = 2,
+        Preparing = 3
     }
 
     public class OrderStatus
