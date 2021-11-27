@@ -121,7 +121,6 @@ namespace API.Hubs
         {
             query.RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value);
             var newFoodDrink = await _mediator.Send(query);
-            System.Console.WriteLine(newFoodDrink.Id);
             await Clients.Caller.SendAsync("AddNewFoodDrinkHandler", newFoodDrink);
         }
     }
