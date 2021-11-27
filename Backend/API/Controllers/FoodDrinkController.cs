@@ -49,6 +49,7 @@ namespace API.Controllers
         [Route("{id}")]
         public ActionResult Delete(int id)
         {
+            Console.WriteLine("delete");
             var foodDrink = _dbContext.FoodsDrinks.SingleOrDefault(p => p.Id == id);
 
             if (foodDrink == null)
@@ -64,9 +65,6 @@ namespace API.Controllers
         [Route("{id}")]
         public ActionResult Modify([FromRoute] int id, [FromBody] FoodDrinkDTO updated)
         {
-            if (id != updated.Id)
-                return BadRequest();
-
             var foodDrink = _dbContext.FoodsDrinks.SingleOrDefault(p => p.Id == id);
 
             if (foodDrink == null)

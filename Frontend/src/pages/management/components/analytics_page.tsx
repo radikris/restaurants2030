@@ -6,6 +6,7 @@ import {
   NumberInputField,
   NumberInputStepper,
   Center,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import React, { useEffect, useCallback } from "react";
 
@@ -21,6 +22,8 @@ import {
 import { FoodDrink } from "../../../models/food_drink";
 import ApiContext from "../../../store/api_context";
 import { HubConnectionState } from "@microsoft/signalr";
+import { getFoodDrink } from "../../../util/agent";
+import EditCard from "./editable_card";
 
 interface IFormFoodDrink {
   name: string;
@@ -63,10 +66,16 @@ export default function AnalyticsPage() {
   const parse = (val: string) => val.replace(/^\$/, "");
 
   const [value, setValue] = React.useState("0.0");
+  const [foodDrinks, setFoodDrinks] = React.useState<FoodDrink[]>([]);
 
-  const handleNewFoodDrink = useCallback((newFoodDrink: FoodDrink) => {
-    console.log(newFoodDrink);
-  }, []);
+  const handleNewFoodDrink = useCallback(
+    (newFoodDrink: FoodDrink) => {
+      console.log(newFoodDrink);
+      foodDrinks.push(newFoodDrink);
+      setFoodDrinks(foodDrinks);
+    },
+    [foodDrinks]
+  );
 
   useEffect(() => {
     if (apiContext?.connection) {
@@ -79,65 +88,114 @@ export default function AnalyticsPage() {
     }
   }, [apiContext, handleNewFoodDrink]);
 
+  const updateItem = (id: number, name: string, price: number) => {
+    const newList = foodDrinks.map((item) => {
+      if (item.id === id) {
+        const updatedItem = {
+          ...item,
+          name: name,
+          price: price,
+        };
+
+        return updatedItem;
+      }
+
+      return item;
+    });
+
+    setFoodDrinks(newList);
+  };
+
+  const deleteItem = (id: number) => {
+    const newList = foodDrinks.filter((item) => item.id !== id);
+    setFoodDrinks(newList);
+  };
+
+  useEffect(() => {
+    const fetchFoodDrink = async () => {
+      const result = await getFoodDrink();
+      setFoodDrinks(result);
+    };
+    fetchFoodDrink();
+  }, []);
+
   return (
-    <Center>
-      <Box
-        maxW={"400px"}
-        w={"full"}
-        mb={4}
-        p={3}
-        shadow="base"
-        borderWidth="1px"
-        alignSelf={{ base: "center", lg: "flex-start" }}
-        borderColor="gray.200"
-        borderRadius={"xl"}
-        boxShadow={"2xl"}
-        rounded={"md"}
-        background={"white"}
-        overflow={"hidden"}
-      >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl isInvalid={errors.name}>
-            <FormLabel htmlFor="name">Please add your new food/drink</FormLabel>
-            <Input
-              id="name"
-              placeholder="Food or drink name"
-              {...register("name", {
-                required: "This is required",
-                minLength: { value: 4, message: "Minimum length should be 4" },
-              })}
+    <Box w={"full"}>
+      <Center>
+        <Box
+          maxW={"400px"}
+          w={"full"}
+          mb={4}
+          p={3}
+          shadow="base"
+          borderWidth="1px"
+          alignSelf={{ base: "center", lg: "flex-start" }}
+          borderColor="gray.200"
+          borderRadius={"xl"}
+          boxShadow={"2xl"}
+          rounded={"md"}
+          background={"white"}
+          overflow={"hidden"}
+        >
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl isInvalid={errors.name}>
+              <FormLabel htmlFor="name">
+                Please add your new food/drink
+              </FormLabel>
+              <Input
+                id="name"
+                placeholder="Food or drink name"
+                {...register("name", {
+                  required: "This is required",
+                  minLength: {
+                    value: 4,
+                    message: "Minimum length should be 4",
+                  },
+                })}
+              />
+              <NumberInput
+                id="price"
+                {...register("price", {
+                  required: "This is required",
+                })}
+                onChange={(valueString) => setValue(parse(valueString))}
+                value={format(value)}
+                min={0}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+              <FormErrorMessage>
+                {errors.name && errors.name.message}
+              </FormErrorMessage>
+            </FormControl>
+            <Center>
+              <Button
+                mt={4}
+                colorScheme="teal"
+                isLoading={isSubmitting}
+                type="submit"
+              >
+                Submit
+              </Button>
+            </Center>
+          </form>
+        </Box>
+      </Center>
+      <SimpleGrid minChildWidth="120px" spacing="40px">
+        {foodDrinks.map((fooddrink) => {
+          return (
+            <EditCard
+              foodDrink={fooddrink}
+              onUpdate={updateItem}
+              onDelete={deleteItem}
             />
-            <NumberInput
-              id="price"
-              {...register("price", {
-                required: "This is required",
-              })}
-              onChange={(valueString) => setValue(parse(valueString))}
-              value={format(value)}
-              min={0}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <FormErrorMessage>
-              {errors.name && errors.name.message}
-            </FormErrorMessage>
-          </FormControl>
-          <Center>
-            <Button
-              mt={4}
-              colorScheme="teal"
-              isLoading={isSubmitting}
-              type="submit"
-            >
-              Submit
-            </Button>
-          </Center>
-        </form>
-      </Box>
-    </Center>
+          );
+        })}
+      </SimpleGrid>
+    </Box>
   );
 }

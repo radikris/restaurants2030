@@ -1,7 +1,9 @@
-﻿using API.Models;
+﻿using System.Text.Json.Serialization;
+using API.Models;
 
 namespace API.DTO
 {
+
     public class FoodDrinkDTO
     {
         public int Id { get; set; }
@@ -15,7 +17,9 @@ namespace API.DTO
             Name = fd.Name;
             Price = fd.Price;
             Quantity = 0;
+
         }
+        [JsonConstructor]
         public FoodDrinkDTO(int id, string name, int price, int quantity)
         {
             Id = id;
