@@ -10,9 +10,7 @@ import { OrderStatus } from "../../models/order_status";
 import { Order } from "../../models/order";
 import { FoodDrink } from "../../models/food_drink";
 import ApiContext from "../../store/api_context";
-import {
-  HubConnectionState,
-} from "@microsoft/signalr";
+import { HubConnectionState } from "@microsoft/signalr";
 
 export enum ActionTypes {
   INITIAL = "Initial",
@@ -110,15 +108,7 @@ export default function WaiterPage() {
     [handleAddOrder]
   );
 
-  //const [connection, setConnection] = useState<null | HubConnection>(null);
-
   const apiContext = React.useContext(ApiContext);
-
-  /*useEffect(() => {
-    if (apiContext?.connection) {
-      setConnection(apiContext?.connection!);
-    }
-  }, [apiContext?.connection]);*/
 
   const handleChangeStatusInvoke = useCallback(
     (order: Order, status: OrderStatus) => {
@@ -137,7 +127,7 @@ export default function WaiterPage() {
           apiContext?.connection?.invoke("GetAllOrders");
           apiContext?.connection?.invoke("GetAllFoodDrink");
         });
-      
+
       apiContext?.connection.on("AllOrders", (orders: Order[]) => {
         handleInitial(orders);
       });
@@ -146,9 +136,12 @@ export default function WaiterPage() {
         handleChangeStatus(order);
       });
 
-      apiContext?.connection.on("AllFoodDrinksHandler", (foodDrinks: FoodDrink[]) => {
-        handleAllFoodDrink(foodDrinks);
-      });
+      apiContext?.connection.on(
+        "AllFoodDrinksHandler",
+        (foodDrinks: FoodDrink[]) => {
+          handleAllFoodDrink(foodDrinks);
+        }
+      );
 
       apiContext?.connection.on("AddNewOrdersHandler", (orders: Order[]) => {
         handleAddNewOrders(orders);
@@ -186,11 +179,7 @@ export default function WaiterPage() {
     tableOrdersRemastered.forEach(
       (order, index) =>
         (returnArray = returnArray.concat(
-          order.filter(
-            (x) =>
-              x.orderStatus === OrderStatus.InProgress ||
-              x.orderStatus === OrderStatus.Ready
-          )
+          order.filter((x) => x.orderStatus === OrderStatus.Ready)
         ))
     );
     setAllPendingOrders(returnArray);
@@ -239,8 +228,8 @@ export default function WaiterPage() {
               fontSize={"xl"}
             />
           )}
-          swipeChild={<Text>DONE</Text>}
-          icon={<FaArrowAltCircleUp />}
+          trailingChild={<Text>DONE</Text>}
+          trailingIcon={<FaArrowAltCircleUp />}
           list={allPendingOrder}
           onClick={function (orderAction: Order): void {
             handleChangeStatusInvoke(orderAction, OrderStatus.Served);

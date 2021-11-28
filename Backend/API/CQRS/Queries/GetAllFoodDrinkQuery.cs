@@ -23,7 +23,7 @@ namespace API.CQRS.Queries
             {
                 _context = context;
             }
-          
+
             public async Task<List<FoodDrink>> Handle(GetAllFoodDrinkQuery request, CancellationToken cancellationToken)
             {
                 return await _context.FoodsDrinks.Where(x => x.RestaurantId == request.RestaurantId).ToListAsync();

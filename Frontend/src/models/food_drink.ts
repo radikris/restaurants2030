@@ -4,3 +4,8 @@ export interface FoodDrink {
     price: number;
     quantity: number;
 }
+
+export interface FoodDrinkFormValues {
+    name: string;
+    price: number;
+}

@@ -73,17 +73,18 @@ namespace API.Hubs
             var foodDrinks = await _mediator.Send(new GetAllFoodDrinkQuery
             {
                 RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value)
+
             });
+
             var list = new List<FoodDrinkDTO>();
             foodDrinks.ForEach(foodDrink => list.Add(new
                 FoodDrinkDTO
-            {
-                Id = foodDrink.Id,
-                Name = foodDrink.Name,
-                Price = foodDrink.Price,
-                Quantity = 0,
-
-            }));
+            (
+                foodDrink.Id,
+                foodDrink.Name,
+                foodDrink.Price,
+                0
+            )));
             await Clients.Caller.SendAsync("AllFoodDrinksHandler", list);
         }
 
@@ -120,7 +121,6 @@ namespace API.Hubs
         {
             query.RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value);
             var newFoodDrink = await _mediator.Send(query);
-            System.Console.WriteLine(newFoodDrink.Id);
             await Clients.Caller.SendAsync("AddNewFoodDrinkHandler", newFoodDrink);
         }
     }

@@ -81,12 +81,13 @@ export default function TableCard(props: Props) {
                   showTable={false}
                 />
               )}
-              swipeChild={<Text>DONE</Text>}
-              icon={<FaArrowAltCircleDown />}
+              trailingChild={<Text>DONE</Text>}
+              trailingIcon={<FaArrowAltCircleDown />}
               list={[
                 ...props.table.filter(
                   (x) =>
                     x.orderStatus === OrderStatus.InProgress ||
+                    x.orderStatus === OrderStatus.Preparing ||
                     x.orderStatus === OrderStatus.Ready
                 ),
               ]}
@@ -106,8 +107,8 @@ export default function TableCard(props: Props) {
                   fontSize={"md"}
                 />
               )}
-              swipeChild={<Text>BACK</Text>}
-              icon={<FaArrowAltCircleUp />}
+              trailingChild={<Text>BACK</Text>}
+              trailingIcon={<FaArrowAltCircleUp />}
               list={[
                 ...props.table.filter(
                   (x) => x.orderStatus === OrderStatus.Served
