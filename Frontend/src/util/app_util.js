@@ -1,6 +1,6 @@
-const formatter = new Intl.NumberFormat("hu-HU", {
+const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
-  currency: "HUF",
+  currency: "USD",
 });
 
 export { formatter };

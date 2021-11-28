@@ -48,7 +48,7 @@ export default function EditCard(props: IProps) {
           {props.foodDrink.name}
         </Text>
         <Text fontSize="lg" mb="5" fon>
-          {props.foodDrink.price}
+          {props.foodDrink.price} $
         </Text>
       </Box>
       <Button mx={1} onClick={onOpen} color="#41bb93">
@@ -60,7 +60,7 @@ export default function EditCard(props: IProps) {
           deleteFoodDrink(props.foodDrink.id);
           props.onDelete(props.foodDrink.id);
         }}
-        color="#666666"
+        color="#ff0000"
       >
         <MdDelete />
       </Button>

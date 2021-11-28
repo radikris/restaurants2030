@@ -33,6 +33,8 @@ namespace API.Controllers
         {
 
             //TODO GET FOODRINKS BY RESTAURANTID
+            //var RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value);
+
             var list = await _dbContext.FoodsDrinks.Where(x => x.RestaurantId == 1).ToListAsync();
 
             var foodDrinkDTOList = new List<FoodDrinkDTO>();
@@ -47,25 +49,24 @@ namespace API.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            Console.WriteLine("delete");
-            var foodDrink = _dbContext.FoodsDrinks.SingleOrDefault(p => p.Id == id);
+            var foodDrink = await _dbContext.FoodsDrinks.SingleOrDefaultAsync(p => p.Id == id);
 
             if (foodDrink == null)
                 return NotFound();
 
             _dbContext.FoodsDrinks.Remove(foodDrink);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return NoContent(); // a sikeres torlest 204 NoContent valasszal jelezzuk (lehetne meg 200 OK is, ha beletennenk an entitast)
         }
 
         [HttpPut]
         [Route("{id}")]
-        public ActionResult Modify([FromRoute] int id, [FromBody] FoodDrinkDTO updated)
+        public async Task<ActionResult> Modify([FromRoute] int id, [FromBody] FoodDrinkDTO updated)
         {
-            var foodDrink = _dbContext.FoodsDrinks.SingleOrDefault(p => p.Id == id);
+            var foodDrink = await _dbContext.FoodsDrinks.SingleOrDefaultAsync(p => p.Id == id);
 
             if (foodDrink == null)
                 return NotFound();
@@ -75,7 +76,7 @@ namespace API.Controllers
             foodDrink.Price = updated.Price;
 
             // mentes az adatbazisban
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return NoContent(); // 204 NoContent valasz
         }
