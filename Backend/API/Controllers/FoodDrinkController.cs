@@ -32,10 +32,9 @@ namespace API.Controllers
         public async Task<ActionResult<List<DTO.FoodDrinkDTO>>> GetFoodDrinks()
         {
 
-            //TODO GET FOODRINKS BY RESTAURANTID
-            //var RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value);
+            var RestaurantId = int.Parse(((ClaimsIdentity)HttpContext.User.Identity).FindFirst("Restaurant").Value);
 
-            var list = await _dbContext.FoodsDrinks.Where(x => x.RestaurantId == 1).ToListAsync();
+            var list = await _dbContext.FoodsDrinks.Where(x => x.RestaurantId == RestaurantId).ToListAsync();
 
             var foodDrinkDTOList = new List<FoodDrinkDTO>();
             foreach (var item in list)

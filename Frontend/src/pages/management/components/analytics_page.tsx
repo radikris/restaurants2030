@@ -72,7 +72,7 @@ export default function AnalyticsPage() {
     (newFoodDrink: FoodDrink) => {
       console.log(newFoodDrink);
       foodDrinks.push(newFoodDrink);
-      setFoodDrinks(foodDrinks);
+      setFoodDrinks(foodDrinks); //TODO FIX DOUBLE ADD ISSUE
     },
     [foodDrinks]
   );
