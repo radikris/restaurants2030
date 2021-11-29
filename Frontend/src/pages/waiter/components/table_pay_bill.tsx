@@ -33,6 +33,7 @@ export default function TablePayBill(props: IProps) {
     setSplitBill([...splitBill, order]);
 
     console.log("tosplit");
+    console.log(splitBill);
   };
   const moveOrderToNormalBill = (id: number) => {
     const orderIdx = splitBill.findIndex((o) => o.id === id);
@@ -41,6 +42,7 @@ export default function TablePayBill(props: IProps) {
     setNormalBill([...normalBill, order]);
 
     console.log("tonormal");
+    console.log(normalBill);
   };
 
   const apiContext = React.useContext(ApiContext);
@@ -57,11 +59,16 @@ export default function TablePayBill(props: IProps) {
     if (apiContext?.connection?.state === HubConnectionState.Connected) {
       apiContext?.connection.invoke("PayOrder", {
         PaidOrders: isSplitBill ? splitBill : normalBill,
+        CheckoutMethod: 1, //TODO GET IT FROM RADIOBUTTON
       });
+      apiContext?.connection?.invoke("GetAllOrders");
     }
   };
 
   const handlePayOrder = (orders: Order[]) => {
+    console.log(isSplitBill);
+    console.log(splitBill);
+    console.log(normalBill);
     if (isSplitBill) {
       setSplitBill([]);
     } else {

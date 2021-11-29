@@ -13,7 +13,8 @@ namespace API.Models
         public int FoodDrinkId { get; set; }
         public FoodDrink FoodDrink { get; set; }
 
-        //TODO ADD CASH OR BANKCARD
+        public CheckoutMethodId CheckoutMethodId { get; set; }
+        public CheckoutMethod CheckoutMethod { get; set; }
 
     }
 }

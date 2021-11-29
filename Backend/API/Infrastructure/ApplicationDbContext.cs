@@ -37,6 +37,22 @@ namespace API.Infrastructure
                         .Cast<OrderStatusId>()
                         .Select(x => new OrderStatus() { OrderStatusId = x, Name = x.ToString() })
                 );
+
+
+            modelBuilder.Entity<PaidOrder>()
+                .Property(p => p.CheckoutMethodId)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<CheckoutMethod>()
+                .Property(p => p.CheckoutMethodId)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<CheckoutMethod>()
+                .HasData(
+                    Enum.GetValues(typeof(CheckoutMethodId))
+                        .Cast<CheckoutMethodId>()
+                        .Select(x => new CheckoutMethod() { CheckoutMethodId = x, Name = x.ToString() })
+                );
         }
     }
 }

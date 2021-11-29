@@ -50,11 +50,11 @@ namespace API.Infrastructure
 
             var paidOrders = new PaidOrder[]
             {
-                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 3 },
-                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 4 },
-                new PaidOrder{ RestaurantId = 1, Table = 2, FoodDrinkId = 1 },
-                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6 },
-                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6 },
+                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 3, CheckoutMethodId=CheckoutMethodId.Cash },
+                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 4 ,CheckoutMethodId=CheckoutMethodId.Cash},
+                new PaidOrder{ RestaurantId = 1, Table = 2, FoodDrinkId = 1,CheckoutMethodId=CheckoutMethodId.BankCard },
+                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6,CheckoutMethodId=CheckoutMethodId.Cash },
+                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6,CheckoutMethodId=CheckoutMethodId.BankCard },
 
             };
             foreach (var paidOrder in paidOrders)

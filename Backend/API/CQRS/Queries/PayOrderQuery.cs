@@ -17,8 +17,7 @@ namespace API.CQRS.Queries
 
         public List<OrderDTO> PaidOrders { get; set; }
 
-        //TODO ADD CASH OR BANKCARD
-
+        public CheckoutMethodId CheckoutMethod { get; set; }
 
         public class PayOrderQueryHandler : IRequestHandler<PayOrderQuery, List<Order>>
         {
@@ -37,8 +36,7 @@ namespace API.CQRS.Queries
                     var findPaidOrder = await _context.Orders.FirstOrDefaultAsync(o => o.Id == paidOrder.Id);
                     _context.Orders.Remove(findPaidOrder);
 
-                    //TODO ADD CASH OR BANKCARD
-                    var paidO = new PaidOrder { RestaurantId = request.RestaurantId, Table = paidOrder.Table, FoodDrinkId = findPaidOrder.FoodDrinkId };
+                    var paidO = new PaidOrder { RestaurantId = request.RestaurantId, Table = paidOrder.Table, FoodDrinkId = findPaidOrder.FoodDrinkId, CheckoutMethodId = request.CheckoutMethod };
                     _context.PaidOrders.Add(paidO);
                 }
                 await _context.SaveChangesAsync();
