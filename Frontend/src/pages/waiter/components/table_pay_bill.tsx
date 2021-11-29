@@ -1,10 +1,12 @@
 import { Button, Text } from "@chakra-ui/react";
 import { Box, Center, Grid, GridItem, VStack } from "@chakra-ui/layout";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import SelectPaymentOption from "./select_payment_option";
 import TableBillList from "./table_bill_list";
 import { Order } from "../../../models/order";
+import ApiContext from "../../../store/api_context";
+import { HubConnectionState } from "@microsoft/signalr";
 
 export interface IProps {
   table: Order[];
@@ -41,6 +43,32 @@ export default function TablePayBill(props: IProps) {
     console.log("tonormal");
   };
 
+  const apiContext = React.useContext(ApiContext);
+
+  useEffect(() => {
+    if (apiContext?.connection) {
+      apiContext?.connection.on("PayOrdersHandler", (orders: Order[]) => {
+        handlePayOrder(orders);
+      });
+    }
+  }, [apiContext?.connection]);
+
+  const payOrderInvoke = () => {
+    if (apiContext?.connection?.state === HubConnectionState.Connected) {
+      apiContext?.connection.invoke("PayOrder", {
+        PaidOrders: isSplitBill ? splitBill : normalBill,
+      });
+    }
+  };
+
+  const handlePayOrder = (orders: Order[]) => {
+    if (isSplitBill) {
+      setSplitBill([]);
+    } else {
+      setNormalBill([]);
+    }
+  };
+
   return (
     <Grid
       templateRows="repeat(1, 1fr)"
@@ -56,7 +84,7 @@ export default function TablePayBill(props: IProps) {
         />
         {!isSplitBill && (
           <Center>
-            <Button>PAY</Button>
+            <Button onClick={payOrderInvoke}>PAY</Button>
           </Center>
         )}
       </GridItem>
@@ -85,7 +113,7 @@ export default function TablePayBill(props: IProps) {
                   buttonText={"UNDO"}
                 />
                 <Center>
-                  <Button>PAY</Button>
+                  <Button onClick={payOrderInvoke}>PAY</Button>
                 </Center>
               </Box>
             )}

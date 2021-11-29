@@ -48,6 +48,19 @@ namespace API.Infrastructure
                 context.Orders.Add(order);
             context.SaveChanges();
 
+            var paidOrders = new PaidOrder[]
+            {
+                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 3 },
+                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 4 },
+                new PaidOrder{ RestaurantId = 1, Table = 2, FoodDrinkId = 1 },
+                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6 },
+                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6 },
+
+            };
+            foreach (var paidOrder in paidOrders)
+                context.PaidOrders.Add(paidOrder);
+            context.SaveChanges();
+
             var roles = new string[]
             {
                 "Admin", "Waiter", "Chef", "Management"
@@ -55,15 +68,15 @@ namespace API.Infrastructure
             foreach (var role in roles)
                 await roleManager.CreateAsync(new IdentityRole(role));
 
-                var users = new AppUser[]
-                {
+            var users = new AppUser[]
+            {
                     new AppUser{ RestaurantId = 1, Email = "admin@dev.com", UserName = "adminuser" },
-                };
-                foreach (var user in users)
-                {
-                    await userManager.CreateAsync(user, "adminpass");
-                    await userManager.AddToRoleAsync(user, "Admin");
-                }
+            };
+            foreach (var user in users)
+            {
+                await userManager.CreateAsync(user, "adminpass");
+                await userManager.AddToRoleAsync(user, "Admin");
+            }
         }
     }
 }

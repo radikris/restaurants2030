@@ -123,5 +123,12 @@ namespace API.Hubs
             var newFoodDrink = await _mediator.Send(query);
             await Clients.Caller.SendAsync("AddNewFoodDrinkHandler", newFoodDrink);
         }
+
+        public async Task PayOrder(PayOrderQuery query)
+        {
+            query.RestaurantId = int.Parse(((ClaimsIdentity)Context.User.Identity).FindFirst("Restaurant").Value);
+            await _mediator.Send(query);
+            await Clients.Caller.SendAsync("PayOrdersHandler");
+        }
     }
 }

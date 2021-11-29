@@ -12,6 +12,7 @@ namespace API.Infrastructure
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<FoodDrink> FoodsDrinks { get; set; }
+        public DbSet<PaidOrder> PaidOrders { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
