@@ -74,31 +74,27 @@ namespace API.Controllers
 
         public async Task<ActionResult<List<DTO.AnalyticsDTO>>> GetMostPopularFoodDrinks()
         {
-            //Az 5 db legtöbbet eladott fooddrink
-            //TODO BARNA
 
             var RestaurantId = int.Parse(((ClaimsIdentity)HttpContext.User.Identity).FindFirst("Restaurant").Value);
 
-            // var list = await _dbContext.PaidOrders
-            // .Include(x => x.FoodDrink)
-            // .Where(x => x.RestaurantId == RestaurantId)
-            // .GroupBy(x => x.FoodDrinkId)
-            // .Select(x => new { Name = x.FoodDrink.Name, Amount = x.Count(p => p.Id) })
-            // .OrderByDescending(x => x.Amount)
-            // .Limit(5)
-            // .ToListAsync();
+            var list = await _dbContext.PaidOrders
+             .Include(x => x.FoodDrink)
+             .Where(y => y.RestaurantId == RestaurantId)
+             .GroupBy(x => x.FoodDrinkId)
+             .Select(obj => new { Name = obj.Key, Amount = obj.ToList().Count() })
+             .OrderByDescending(z => z.Amount)
+             .ToListAsync();
 
             var resultList = new List<AnalyticsDTO>();
-            // foreach (var item in [list])
-            // {
-            //     int idx = item.
-            //     resultList.Add(new AnalyticsDTO { DataName = item.Name, DataValue = item.Amount });
-            // }
+            foreach (var item in list)
+            {
+                var foodDrink = await _dbContext.FoodsDrinks.FirstOrDefaultAsync(x => x.Id == item.Name);
+                if (foodDrink != null)
+                    resultList.Add(new AnalyticsDTO { DataName = foodDrink.Name, DataValue = item.Amount });
+            }
 
-            return (resultList).ToList();
-
+            return resultList;
         }
-
 
     }
 }
