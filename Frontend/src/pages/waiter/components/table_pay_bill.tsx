@@ -1,6 +1,6 @@
 import { Button, Text } from "@chakra-ui/react";
 import { Box, Center, Grid, GridItem, VStack } from "@chakra-ui/layout";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import SelectPaymentOption from "./select_payment_option";
 import TableBillList from "./table_bill_list";
@@ -42,7 +42,7 @@ export default function TablePayBill(props: IProps) {
 
   const apiContext = React.useContext(ApiContext);
 
-  // useEffect(() => {
+  // useEffect(() => {  //TODO CALLBACK METHOD SHOULD CALL HANDLEPAYORDER BUT WITH CORRECT ISSPLITBALL STATE
   //   if (apiContext?.connection) {
   //     apiContext?.connection.on("PayOrdersHandler", (orders: Order[]) => {
   //       console.log("useeffect handler");
