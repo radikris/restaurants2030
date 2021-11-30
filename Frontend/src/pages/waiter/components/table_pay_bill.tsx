@@ -14,6 +14,7 @@ export interface IProps {
 
 export default function TablePayBill(props: IProps) {
   const [isSplitBill, setIsSplitBill] = useState(false);
+  console.log(isSplitBill);
 
   const [normalBill, setNormalBill] = useState(props.table);
   const [splitBill, setSplitBill] = useState<Order[]>([]);
@@ -31,47 +32,48 @@ export default function TablePayBill(props: IProps) {
 
     setNormalBill(normalBill.filter((_, i) => i !== orderIdx));
     setSplitBill([...splitBill, order]);
-
-    console.log("tosplit");
-    console.log(splitBill);
   };
   const moveOrderToNormalBill = (id: number) => {
     const orderIdx = splitBill.findIndex((o) => o.id === id);
     const order = splitBill[orderIdx];
     setSplitBill(splitBill.filter((_, i) => i !== orderIdx));
     setNormalBill([...normalBill, order]);
-
-    console.log("tonormal");
-    console.log(normalBill);
   };
 
   const apiContext = React.useContext(ApiContext);
 
-  useEffect(() => {
-    if (apiContext?.connection) {
-      apiContext?.connection.on("PayOrdersHandler", (orders: Order[]) => {
-        handlePayOrder(orders);
-      });
-    }
-  }, [apiContext?.connection]);
+  // useEffect(() => {
+  //   if (apiContext?.connection) {
+  //     apiContext?.connection.on("PayOrdersHandler", (orders: Order[]) => {
+  //       console.log("useeffect handler");
+  //       console.log(isSplitBill);
+  //       handlePayOrder(orders);
+  //     });
+  //   }
+  // }, [apiContext?.connection]);
 
   const payOrderInvoke = () => {
+    console.log("payorderinvoke");
+    console.log(isSplitBill);
+
     if (apiContext?.connection?.state === HubConnectionState.Connected) {
       apiContext?.connection.invoke("PayOrder", {
         PaidOrders: isSplitBill ? splitBill : normalBill,
         CheckoutMethod: 1, //TODO GET IT FROM RADIOBUTTON
       });
-      apiContext?.connection?.invoke("GetAllOrders");
+      //apiContext?.connection?.invoke("GetAllOrders");
+      handlePayOrder();
     }
   };
 
-  const handlePayOrder = (orders: Order[]) => {
+  const handlePayOrder = () => {
+    console.log("handlepay called");
     console.log(isSplitBill);
-    console.log(splitBill);
-    console.log(normalBill);
     if (isSplitBill) {
+      console.log("splitbillt torlom");
       setSplitBill([]);
     } else {
+      console.log("normalbillt torlom");
       setNormalBill([]);
     }
   };

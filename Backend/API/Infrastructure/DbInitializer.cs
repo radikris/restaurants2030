@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Models;
@@ -48,13 +49,14 @@ namespace API.Infrastructure
                 context.Orders.Add(order);
             context.SaveChanges();
 
+            var dateNow = DateTime.Now;
             var paidOrders = new PaidOrder[]
             {
-                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 3, CheckoutMethodId=CheckoutMethodId.Cash },
-                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 4 ,CheckoutMethodId=CheckoutMethodId.Cash},
-                new PaidOrder{ RestaurantId = 1, Table = 2, FoodDrinkId = 1,CheckoutMethodId=CheckoutMethodId.BankCard },
-                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6,CheckoutMethodId=CheckoutMethodId.Cash },
-                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6,CheckoutMethodId=CheckoutMethodId.BankCard },
+                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 3, CheckoutMethodId=CheckoutMethodId.Cash, Date=dateNow.Date.AddDays(-2) },
+                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 4 ,CheckoutMethodId=CheckoutMethodId.Cash, Date=dateNow.Date.AddDays(-2)},
+                new PaidOrder{ RestaurantId = 1, Table = 2, FoodDrinkId = 1,CheckoutMethodId=CheckoutMethodId.BankCard,Date=dateNow },
+                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6,CheckoutMethodId=CheckoutMethodId.Cash, Date=dateNow.Date.AddDays(+1) },
+                new PaidOrder{ RestaurantId = 1, Table = 3, FoodDrinkId = 6,CheckoutMethodId=CheckoutMethodId.BankCard, Date=dateNow.Date.AddDays(2) },
 
             };
             foreach (var paidOrder in paidOrders)

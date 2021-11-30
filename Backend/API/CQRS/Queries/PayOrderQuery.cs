@@ -36,7 +36,7 @@ namespace API.CQRS.Queries
                     var findPaidOrder = await _context.Orders.FirstOrDefaultAsync(o => o.Id == paidOrder.Id);
                     _context.Orders.Remove(findPaidOrder);
 
-                    var paidO = new PaidOrder { RestaurantId = request.RestaurantId, Table = paidOrder.Table, FoodDrinkId = findPaidOrder.FoodDrinkId, CheckoutMethodId = request.CheckoutMethod };
+                    var paidO = new PaidOrder { RestaurantId = request.RestaurantId, Table = paidOrder.Table, FoodDrinkId = findPaidOrder.FoodDrinkId, CheckoutMethodId = request.CheckoutMethod, Date = DateTime.Now };
                     _context.PaidOrders.Add(paidO);
                 }
                 await _context.SaveChangesAsync();

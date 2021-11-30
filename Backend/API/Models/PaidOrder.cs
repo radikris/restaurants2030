@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace API.Models
@@ -12,6 +13,8 @@ namespace API.Models
 
         public int FoodDrinkId { get; set; }
         public FoodDrink FoodDrink { get; set; }
+
+        public DateTime Date { get; set; }
 
         public CheckoutMethodId CheckoutMethodId { get; set; }
         public CheckoutMethod CheckoutMethod { get; set; }
