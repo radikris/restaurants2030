@@ -73,10 +73,9 @@ export default function CustomPieChart() {
     fetchAnalytics();
   }, []);
 
-  console.log(popularFoodDrink);
   return (
     <>
-      <Doughnut data={data} />
+      <Doughnut data={popularFoodDrink} />
     </>
   );
 }

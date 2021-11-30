@@ -75,6 +75,7 @@ namespace API.Controllers
         public async Task<ActionResult<List<DTO.AnalyticsDTO>>> GetMostPopularFoodDrinks()
         {
             //Az 5 db legtöbbet eladott fooddrink
+            //TODO BARNA
 
             var RestaurantId = int.Parse(((ClaimsIdentity)HttpContext.User.Identity).FindFirst("Restaurant").Value);
 
