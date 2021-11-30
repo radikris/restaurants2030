@@ -42,7 +42,7 @@ namespace API.Controllers
             
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
             if (result.Succeeded)
-                return Ok(new Token{ AccessToken = _tokenService.CreateToken(user, roles[0]) });
+                return Ok(new Token{ AccessToken = _tokenService.CreateToken(user, roles) });
 
             return Unauthorized();
         }
@@ -72,7 +72,7 @@ namespace API.Controllers
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "Admin");
-                return Ok(new Token{ AccessToken = _tokenService.CreateToken(user, "Admin") });
+                return Ok(new Token{ AccessToken = _tokenService.CreateToken(user, new List<string> { "Admin" }) });
             }
 
             _dbContext.Restaurants.Remove(restaurant);
