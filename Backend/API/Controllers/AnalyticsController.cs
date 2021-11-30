@@ -39,6 +39,7 @@ namespace API.Controllers
             DateTime now = DateTime.Now;
             var list = await _dbContext.PaidOrders
             .Where(x => x.RestaurantId == RestaurantId)
+            .Include(x => x.FoodDrink)
             .Where(x => x.Date >= startDate && x.Date <= now)
             .ToListAsync();
 
@@ -52,9 +53,15 @@ namespace API.Controllers
             }
             foreach (var item in list)
             {
-                int idx = ((int)item.Date.DayOfWeek) - ((int)startDate.Date.DayOfWeek);
+                Console.WriteLine(item);
+                //int idx = Math.Max((((int)item.Date.DayOfWeek) - ((int)startDate.Date.DayOfWeek)));
+                int idx = (((int)item.Date.DayOfWeek));
+                Console.WriteLine(idx);
+                Console.WriteLine(resultList[idx].DataName);
+                Console.WriteLine(resultList[idx].DataValue);
+
                 resultList[idx].DataName = item.Date.DayOfWeek.ToString();
-                resultList[idx].DataValue += item.FoodDrink.Price;
+                resultList[idx].DataValue = resultList[idx].DataValue + item.FoodDrink.Price;
 
             }
 
@@ -71,21 +78,21 @@ namespace API.Controllers
 
             var RestaurantId = int.Parse(((ClaimsIdentity)HttpContext.User.Identity).FindFirst("Restaurant").Value);
 
-            var list = await _dbContext.PaidOrders
-            .Include(x => x.FoodDrink)
-            .Where(x => x.RestaurantId == RestaurantId)
-            .GroupBy(x => x.FoodDrinkId)
-            .Select(x => new { Name = x.FoodDrink.Name, Amount = x.Count(p => p.Id) })
-            .OrderByDescending(x => x.Amount)
-            .Where(x => x)
-            .ToListAsync();
+            // var list = await _dbContext.PaidOrders
+            // .Include(x => x.FoodDrink)
+            // .Where(x => x.RestaurantId == RestaurantId)
+            // .GroupBy(x => x.FoodDrinkId)
+            // .Select(x => new { Name = x.FoodDrink.Name, Amount = x.Count(p => p.Id) })
+            // .OrderByDescending(x => x.Amount)
+            // .Limit(5)
+            // .ToListAsync();
 
             var resultList = new List<AnalyticsDTO>();
-            foreach (var item in list)
-            {
-                int idx = item.
-                resultList.Add(new AnalyticsDTO { DataName = item.Name, DataValue = item.Amount });
-            }
+            // foreach (var item in [list])
+            // {
+            //     int idx = item.
+            //     resultList.Add(new AnalyticsDTO { DataName = item.Name, DataValue = item.Amount });
+            // }
 
             return (resultList).ToList();
 

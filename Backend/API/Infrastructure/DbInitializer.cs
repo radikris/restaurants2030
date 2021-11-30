@@ -52,6 +52,8 @@ namespace API.Infrastructure
             var dateNow = DateTime.Now;
             var paidOrders = new PaidOrder[]
             {
+                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 2, CheckoutMethodId=CheckoutMethodId.Cash, Date=dateNow.Date.AddDays(-3) },
+                new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 5, CheckoutMethodId=CheckoutMethodId.Cash, Date=dateNow.Date.AddDays(-4) },
                 new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 3, CheckoutMethodId=CheckoutMethodId.Cash, Date=dateNow.Date.AddDays(-2) },
                 new PaidOrder{ RestaurantId = 1, Table = 1,FoodDrinkId = 4 ,CheckoutMethodId=CheckoutMethodId.Cash, Date=dateNow.Date.AddDays(-2)},
                 new PaidOrder{ RestaurantId = 1, Table = 2, FoodDrinkId = 1,CheckoutMethodId=CheckoutMethodId.BankCard,Date=dateNow },
