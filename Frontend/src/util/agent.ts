@@ -49,6 +49,14 @@ export function getToken(): string | null {
     return null;
 }
 
+export async function getUserRoles(): Promise<string[]> {
+    const response = await axios.get<string[]>("/account/userRoles");
+    if (response.data)
+        return response.data;
+
+    return [];
+}
+
 export async function getFoodDrink(): Promise<FoodDrink[]> {
     const response = await axios.get<FoodDrink[]>("/fooddrink");
     if (response.data) {

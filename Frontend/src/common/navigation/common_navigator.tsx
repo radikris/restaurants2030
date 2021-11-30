@@ -10,6 +10,7 @@ import { Routes } from "../../util/constants";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import ApiContext, { ApiContextInterface } from "../../store/api_context";
 import { getToken } from "../../util/agent";
+import { /*PrivateRoute,*/ PrivateRoute2 } from '../navigation/private_route';
 
 function CommonNavigator() {
   const apiContext: ApiContextInterface = {
@@ -33,28 +34,23 @@ function CommonNavigator() {
           <Route path={Routes.RESTAURANT} exact>
             <RestaurantPage />
           </Route>
-          <Route
-            path={Routes.MANAGEMENT}
-            render={(props) =>
-              getToken() !== null ? (
-                <ManagementPage />
-              ) : (
-                <Redirect to="/login" />
-              )
-            }
-          />
-          <Route
-            path={Routes.KITCHEN}
-            render={(props) =>
-              getToken() !== null ? <KitchenPage /> : <Redirect to="/login" />
-            }
-          />
-          <Route
-            path={Routes.WAITER}
-            render={(props) =>
-              getToken() !== null ? <WaiterPage /> : <Redirect to="/login" />
-            }
-          />
+          <Route path={Routes.MANAGEMENT}>
+            <PrivateRoute2 roles={["Admin"]}>
+              <ManagementPage />
+            </PrivateRoute2>
+          </Route>
+          <Route path={Routes.KITCHEN}>
+            <PrivateRoute2 roles={["Admin", "Chef"]}>
+              <KitchenPage />
+             </PrivateRoute2>
+          </Route>
+
+          <Route path={Routes.WAITER}>
+            <PrivateRoute2 roles={["Admin"]}>
+              <WaiterPage />
+            </PrivateRoute2>
+          </Route>
+          
           <Route path={Routes.LOGIN}>
             <LoginPage />
           </Route>

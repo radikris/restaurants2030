@@ -18,12 +18,13 @@ namespace API.Services
             _configuration = configuration;
         }
 
-        public string CreateToken(AppUser user)
+        public string CreateToken(AppUser user, string role)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim("Restaurant", user.RestaurantId.ToString())
+                new Claim("Restaurant", user.RestaurantId.ToString()),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AccessTokenKey"]));
