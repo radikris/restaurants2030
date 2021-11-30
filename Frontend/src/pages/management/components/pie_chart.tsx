@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { Analytics } from "../../../models/analytics";
 import { getPopularFoodDrinks } from "../../../util/agent";
+
+export interface DataProps {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string[];
+    borderColor: string[];
+    borderWidth: number;
+  }[];
+}
 
 var data = {
   labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -29,18 +39,18 @@ var data = {
 };
 
 export default function CustomPieChart() {
-  const [weeklyIncome, setweeklyIncome] = useState<Analytics[]>([]);
+  const [popularFoodDrink, setpopularFoodDrink] = useState<DataProps>();
   useEffect(() => {
     const fetchAnalytics = async () => {
       const result = await getPopularFoodDrinks();
-      setweeklyIncome(result);
       var dataName: string[];
       var dataValue: number[];
       dataName = [];
       dataValue = [];
       result.forEach((element) => {
-        dataName.push(element.data);
-        dataValue.push(element.value);
+        console.log(element);
+        dataName.push(element.dataName);
+        dataValue.push(element.dataValue);
       });
 
       var setDataSet: {
@@ -58,9 +68,12 @@ export default function CustomPieChart() {
         labels: dataName,
         datasets: setDataSet,
       };
+      setpopularFoodDrink(data);
     };
     fetchAnalytics();
   }, []);
+
+  console.log(popularFoodDrink);
   return (
     <>
       <Doughnut data={data} />

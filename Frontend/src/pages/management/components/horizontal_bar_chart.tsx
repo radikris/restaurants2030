@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Analytics } from "../../../models/analytics";
 import { getWeeklyIncome } from "../../../util/agent";
+
+export interface DataProps {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string[];
+    borderColor: string[];
+    borderWidth: number;
+  }[];
+}
 
 var data = {
   labels: ["Day1", "Day2", "Day3", "Day4", "Day5", "Day6", "Day7"],
@@ -54,18 +64,18 @@ const options = {
 };
 
 export default function CustomHorizontalBarChart() {
-  const [weeklyIncome, setweeklyIncome] = useState<Analytics[]>([]);
+  const [weeklyIncome, setweeklyIncome] = useState<DataProps>();
   useEffect(() => {
     const fetchAnalytics = async () => {
       const result = await getWeeklyIncome();
-      setweeklyIncome(result);
+      console.log(result);
       var dataName: string[];
       var dataValue: number[];
       dataName = [];
       dataValue = [];
       result.forEach((element) => {
-        dataName.push(element.data);
-        dataValue.push(element.value);
+        dataName.push(element.dataName);
+        dataValue.push(element.dataValue);
       });
 
       var setDataSet: {
@@ -83,13 +93,17 @@ export default function CustomHorizontalBarChart() {
         labels: dataName,
         datasets: setDataSet,
       };
+
+      setweeklyIncome(data);
     };
     fetchAnalytics();
   }, []);
 
+  console.log(weeklyIncome);
+
   return (
     <>
-      <Bar data={data} options={options} />
+      <Bar data={weeklyIncome} options={options} />
     </>
   );
 }

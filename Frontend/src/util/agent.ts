@@ -76,6 +76,8 @@ export async function deleteFoodDrink(id: number): Promise<null> {
 export async function getWeeklyIncome(): Promise<Analytics[]> {
     const response = await axios.get<Analytics[]>("/analytics/weekly");
     if (response.data) {
+        console.log("WEEKLY")
+        console.log(response.data);
         return response.data;
     }
     return []

@@ -1,5 +1,5 @@
 
 export interface Analytics {
-    value: number;
-    data: string;
+    dataValue: number;
+    dataName: string;
   }
