@@ -6,12 +6,6 @@ import {
   UseRadioProps,
 } from "@chakra-ui/react";
 import React, { FC } from "react";
-import { PaymentOption } from "../../../models/payment_option";
-
-export interface Props {
-  paymentOption: PaymentOption;
-  isSelected: boolean;
-}
 
 interface RadioCardProps extends UseRadioProps {
   label: string;
@@ -24,6 +18,7 @@ const RadioCard: FC<RadioCardProps> = (props) => {
   const input = getInputProps();
   const checkbox = getCheckboxProps();
 
+  //TODO SAVE RADIOBUTTON VALUE TO STATE
   return (
     <Box as="label">
       <input {...input} onClick={() => console.log(props.label)} />

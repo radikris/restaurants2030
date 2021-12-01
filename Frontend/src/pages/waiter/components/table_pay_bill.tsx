@@ -5,6 +5,8 @@ import { FaPlus } from "react-icons/fa";
 import SelectPaymentOption from "./select_payment_option";
 import TableBillList from "./table_bill_list";
 import { Order } from "../../../models/order";
+import ApiContext from "../../../store/api_context";
+import { HubConnectionState } from "@microsoft/signalr";
 
 export interface IProps {
   table: Order[];
@@ -12,6 +14,7 @@ export interface IProps {
 
 export default function TablePayBill(props: IProps) {
   const [isSplitBill, setIsSplitBill] = useState(false);
+  console.log(isSplitBill);
 
   const [normalBill, setNormalBill] = useState(props.table);
   const [splitBill, setSplitBill] = useState<Order[]>([]);
@@ -29,16 +32,50 @@ export default function TablePayBill(props: IProps) {
 
     setNormalBill(normalBill.filter((_, i) => i !== orderIdx));
     setSplitBill([...splitBill, order]);
-
-    console.log("tosplit");
   };
   const moveOrderToNormalBill = (id: number) => {
     const orderIdx = splitBill.findIndex((o) => o.id === id);
     const order = splitBill[orderIdx];
     setSplitBill(splitBill.filter((_, i) => i !== orderIdx));
     setNormalBill([...normalBill, order]);
+  };
 
-    console.log("tonormal");
+  const apiContext = React.useContext(ApiContext);
+
+  // useEffect(() => {  //TODO CALLBACK METHOD SHOULD CALL HANDLEPAYORDER BUT WITH CORRECT ISSPLITBALL STATE
+  //   if (apiContext?.connection) {
+  //     apiContext?.connection.on("PayOrdersHandler", (orders: Order[]) => {
+  //       console.log("useeffect handler");
+  //       console.log(isSplitBill);
+  //       handlePayOrder(orders);
+  //     });
+  //   }
+  // }, [apiContext?.connection]);
+
+  const payOrderInvoke = () => {
+    console.log("payorderinvoke");
+    console.log(isSplitBill);
+
+    if (apiContext?.connection?.state === HubConnectionState.Connected) {
+      apiContext?.connection.invoke("PayOrder", {
+        PaidOrders: isSplitBill ? splitBill : normalBill,
+        CheckoutMethod: 1, //TODO GET IT FROM RADIOBUTTON
+      });
+      //apiContext?.connection?.invoke("GetAllOrders");
+      handlePayOrder();
+    }
+  };
+
+  const handlePayOrder = () => {
+    console.log("handlepay called");
+    console.log(isSplitBill);
+    if (isSplitBill) {
+      console.log("splitbillt torlom");
+      setSplitBill([]);
+    } else {
+      console.log("normalbillt torlom");
+      setNormalBill([]);
+    }
   };
 
   return (
@@ -56,7 +93,7 @@ export default function TablePayBill(props: IProps) {
         />
         {!isSplitBill && (
           <Center>
-            <Button>PAY</Button>
+            <Button onClick={payOrderInvoke}>PAY</Button>
           </Center>
         )}
       </GridItem>
@@ -85,7 +122,7 @@ export default function TablePayBill(props: IProps) {
                   buttonText={"UNDO"}
                 />
                 <Center>
-                  <Button>PAY</Button>
+                  <Button onClick={payOrderInvoke}>PAY</Button>
                 </Center>
               </Box>
             )}

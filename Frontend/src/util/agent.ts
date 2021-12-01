@@ -2,6 +2,7 @@ import { FoodDrink, FoodDrinkFormValues } from './../models/food_drink';
 import axios from "axios";
 import { User, UserFormValues } from "../models/user";
 import { history } from "../App";
+import { Analytics } from '../models/analytics';
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -71,3 +72,21 @@ export async function deleteFoodDrink(id: number): Promise<null> {
 
     return null;
 }
+
+export async function getWeeklyIncome(): Promise<Analytics[]> {
+    const response = await axios.get<Analytics[]>("/analytics/weekly");
+    if (response.data) {
+        console.log("WEEKLY")
+        console.log(response.data);
+        return response.data;
+    }
+    return []
+}
+export async function getPopularFoodDrinks():  Promise<Analytics[]> {
+    const response = await axios.get<Analytics[]>("/analytics/popular");
+    if (response.data) {
+        return response.data;
+    }
+    return []
+}
+
